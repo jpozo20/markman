@@ -1,9 +1,9 @@
 {
-  "name": "@extend-chrome/ts-react-boilerplate",
-  "version": "1.0.0",
+  "name": "MarkMan",
+  "description": "A Chrome extension for managing bookmarks",
+  "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Chrome extension boilerplate with TypeScript and React",
   "keywords": [
     "chrome-extension",
     "web-extension",
@@ -39,6 +39,7 @@
     "flowbite-react": "^0.4.2",
     "prettier": "^2.2.1",
     "react": "18.2.0",
+    "react-arborist": "^3.0.2",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
     "webextension-polyfill": "^0.10.0"
