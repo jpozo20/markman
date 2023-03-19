@@ -40,7 +40,7 @@ export default {
         path: './postcss.config.cjs',
       },
       extensions: ['.css'],
-      minimize: true,
+      minimize: isProduction,
       inject: {
         insertAt: 'top',
       },
