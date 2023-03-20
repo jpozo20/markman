@@ -13,5 +13,6 @@
   "action": { "default_popup": "pages/popup/popup.html" },
   "chrome_url_overrides": {
     "bookmarks": "pages/main/main.html"
-  }
+  },
+  "permissions": ["bookmarks", "tabs"]
 }
