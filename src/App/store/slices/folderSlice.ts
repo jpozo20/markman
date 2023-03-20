@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-type FoldersState = {
+export type FoldersState = {
   tree: browser.Bookmarks.BookmarkTreeNode[];
   error: string | null;
 };
