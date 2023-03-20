@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
   "background": {
-    "service_worker": "scripts/backgroundScript.ts",
+    "service_worker": "backgroundScript.ts",
     "type": "module"
   },
   "content_scripts": [
     {
-      "js": ["scripts/contentScript.ts"],
+      "js": ["contentScript.ts"],
       "matches": ["https://*/*", "http://*/*"]
     }
   ],
