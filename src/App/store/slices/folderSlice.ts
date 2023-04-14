@@ -1,8 +1,10 @@
 import browser from 'webextension-polyfill';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { BookmarksAdapter } from '../../services/adapter/BookmarksAdapter';
+
 export type FoldersState = {
-  tree: browser.Bookmarks.BookmarkTreeNode[];
+  tree: BookmarkItem[] | undefined;
   error: string | null;
 };
 const initialState: FoldersState = {
@@ -16,17 +18,18 @@ const actionNames = {
   deleteFolder: 'folders/deleteFolder',
 } as const;
 
-const getBookmarksTree = createAsyncThunk(
-  actionNames.getBookmarksTree,
-  async () => {
-    return await browser.bookmarks.getTree();
-  },
-);
+const adapter = new BookmarksAdapter();
+
+const getBookmarksTree = createAsyncThunk(actionNames.getBookmarksTree, async () => {
+  const tree = await browser.bookmarks.getTree();
+  return adapter.convertTree(tree);
+});
 
 const getChildren = createAsyncThunk(
   actionNames.getChildren,
   async (folderId: string) => {
-    return await browser.bookmarks.getChildren(folderId);
+    const children = await browser.bookmarks.getChildren(folderId);
+    return adapter.convertChildren(children);
   },
 );
 
@@ -51,18 +54,20 @@ export const folderSlice = createSlice({
       })
       .addCase(getChildren.fulfilled, (state, action) => {
         const parentId = action.meta.arg;
-        const parent = state.tree.find((bookmark) => bookmark.id == parentId);
+        const parent = state.tree?.find((bookmark) => bookmark.id == parentId);
         if (!parent) return;
-        parent.children = action.payload;
+
+        if (parent.type == BookmarkType.Folder) {
+          const folder = parent as BookmarkFolder;
+          folder.children = action.payload;
+        }
       })
       .addCase(deleteFolder.fulfilled, (state, action) => {
         const parentId = action.meta.arg;
-        const parentIndex = state.tree.findIndex(
-          (bookmark) => bookmark.id == parentId,
-        );
-        if (parentIndex < 0) return;
+        const parentIndex = state.tree?.findIndex((bookmark) => bookmark.id == parentId);
+        if (!parentIndex || +parentId < 0) return;
 
-        state.tree = state.tree.splice(parentIndex, 1);
+        state.tree = state.tree?.splice(parentIndex, 1);
       });
   },
 });

@@ -6,14 +6,18 @@ const enum BookmarkType {
  * Represents an item in the Bookmarks Bar
  */
 interface BookmarkItem {
-  id: string
-  url: string
-  title: string
+  id: string;
+  url?: string;
+  name: string;
+  /**
+   * The list of children item associated to this folder
+   */
+  children?: BookmarkItem[];
 
-  index: number
-  dateAdded: number | null
-  parentId?: number
-  type: BookmarkType
+  index?: number;
+  dateAdded?: number | null;
+  parentId?: string;
+  type?: BookmarkType;
 }
 
 /**
@@ -21,12 +25,7 @@ interface BookmarkItem {
  */
 interface BookmarkFolder extends Omit<BookmarkItem, 'url'> {
   /**
-   * The list of children item associated to this folder
-   */
-  children: [BookmarkItem | BookmarkFolder]
-
-  /**
    * Last time this folder was modified in ms since epoch
    */
-  lastModified: number
+  lastModified?: number;
 }

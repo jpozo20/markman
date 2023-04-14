@@ -4295,6 +4295,11 @@ react-arborist@^3.0.2:
     redux "^4.1.1"
     use-sync-external-store "^1.2.0"
 
+react-complex-tree@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-complex-tree/-/react-complex-tree-2.1.2.tgz#0019412d8d13b87465054cd0401b09f0fd708300"
+  integrity sha512-q/2+J634mw8EMZH4l1w1DROEuUCW4a0G2PkUNMYlQJbDJqtvCOvWlJFzlYvSYecOV7jqCgDbWYy5dhpquc5PKg==
+
 react-dnd-html5-backend@^14.0.1:
   version "14.1.0"
   resolved "https://registry.yarnpkg.com/react-dnd-html5-backend/-/react-dnd-html5-backend-14.1.0.tgz#b35a3a0c16dd3a2bfb5eb7ec62cf0c2cace8b62f"
