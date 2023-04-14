@@ -9,6 +9,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "strict": true,
+    "noImplicitAny": false,
     "target": "es2018"
   }
 }
