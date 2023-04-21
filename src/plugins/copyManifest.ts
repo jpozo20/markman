@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import { resolve } from 'path';
 import { PluginOption } from 'vite';
+import colorLog from '../util/coloredLog';
 
 const root = resolve(__dirname, '..');
 const outDir = resolve(__dirname, '..', '..', 'dist');
@@ -11,7 +12,7 @@ export default function copyManifest(): PluginOption {
     name: 'copyManifest',
     async writeBundle() {
       fs.copyFileSync(manifest, resolve(outDir, 'manifest.json'));
-      console.log('manifest file copied', 'success');
+      colorLog('[plugin] Manifest file copied to output', 'success');
     },
   };
 }
