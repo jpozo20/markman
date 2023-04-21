@@ -20,6 +20,7 @@ export default defineConfig({
     },
   },
   plugins: [react(), copyManifest(), fixHtmlPaths()],
+  //plugins: [react()],
   publicDir,
   build: {
     outDir,
@@ -35,7 +36,7 @@ export default defineConfig({
       },
       output: {
         entryFileNames: (chunk) => {
-          console.log('chunk:', chunk);
+          //console.log('chunk:', chunk);
           if (chunk.name.includes('Script')) {
             return `${chunk.name}.js`;
           }
