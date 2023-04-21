@@ -1,18 +1,20 @@
 {
+  "name": "Markman",
+  "version": "0.1",
   "manifest_version": 3,
   "background": {
-    "service_worker": "backgroundScript.ts",
+    "service_worker": "backgroundScript.js",
     "type": "module"
   },
   "content_scripts": [
     {
-      "js": ["contentScript.ts"],
+      "js": ["contentScript.js"],
       "matches": ["https://*/*", "http://*/*"]
     }
   ],
-  "action": { "default_popup": "pages/popup/popup.html" },
+  "action": { "default_popup": "popup/popup.html" },
   "chrome_url_overrides": {
-    "bookmarks": "pages/main/main.html"
+    "bookmarks": "main/main.html"
   },
   "permissions": ["bookmarks", "tabs"]
 }

@@ -1,9 +1,8 @@
-import * as fs from 'fs';
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import copyManifest from './src/plugins/copyManifest';
-import fixHtmlPaths from './src/plugins/fixHtmlPaths';
+import copyHtmlOutput from './src/plugins/copyHtmlOutput';
 
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
@@ -19,8 +18,7 @@ export default defineConfig({
       '@pages': pagesDir,
     },
   },
-  plugins: [react(), copyManifest(), fixHtmlPaths()],
-  //plugins: [react()],
+  plugins: [react(), copyManifest(), copyHtmlOutput()],
   publicDir,
   build: {
     outDir,
@@ -36,7 +34,6 @@ export default defineConfig({
       },
       output: {
         entryFileNames: (chunk) => {
-          //console.log('chunk:', chunk);
           if (chunk.name.includes('Script')) {
             return `${chunk.name}.js`;
           }
