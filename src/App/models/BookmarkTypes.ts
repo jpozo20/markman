@@ -29,3 +29,5 @@ interface BookmarkFolder extends Omit<BookmarkItem, 'url'> {
    */
   lastModified?: number;
 }
+
+export { BookmarkType, BookmarkItem, BookmarkFolder };

@@ -1,4 +1,5 @@
 import Browser from 'webextension-polyfill';
+import { BookmarkItem, BookmarkType, BookmarkFolder } from '../../models/BookmarkTypes';
 
 export class BookmarksAdapter {
   convertTree(tree: Browser.Bookmarks.BookmarkTreeNode[]): BookmarkItem[] | undefined {
@@ -34,21 +35,7 @@ export class BookmarksAdapter {
 
     const adaptedChildren: BookmarkItem[] = [];
     for (const child of children) {
-      //   let adapted: BookmarkItem = {
-      //     ...child,
-      //     name: child.title,
-      //     type: BookmarkType.Bookmark,
-      //   };
-      //   if (child.children && child.children?.length > 0) {
-      //     const folder = adapted as BookmarkFolder;
-      //     folder.type = BookmarkType.Folder;
-      //     folder.lastModified = child.dateGroupModified;
-      //     folder.children = this.convertChildren(child.children);
-      //     adaptedChildren.push(folder);
-      //   } else {
-      //     adaptedChildren.push(adapted);
-      //   }
-      if (child.children && child.children?.length) {
+      if (child.children) {
         const adapted = this.convertFolder(child);
         adaptedChildren.push(adapted);
       } else {

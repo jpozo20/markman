@@ -2,6 +2,7 @@ import browser from 'webextension-polyfill';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { BookmarksAdapter } from '../../services/adapter/BookmarksAdapter';
+import { BookmarkItem, BookmarkType, BookmarkFolder } from '../../models/BookmarkTypes';
 
 export type FoldersState = {
   tree: BookmarkItem[] | undefined;

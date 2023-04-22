@@ -4,6 +4,7 @@ import { Tree } from 'react-arborist';
 import { FoldersState, getBookmarksTree } from '../../../../store/slices/folderSlice';
 
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
+import Bookmark from './Bookmark';
 
 const style: React.CSSProperties = {
   height: '100vh',
@@ -25,6 +26,7 @@ const Sidebar = () => {
     }
   }, [useAppDispatch]);
 
+  console.log(state);
   let mappedTree;
   if (state && state.tree?.length) {
     const root = state.tree[0];
@@ -39,12 +41,15 @@ const Sidebar = () => {
     <aside id="sidebar" className="bg-slate-800 grow-0 shrink" style={style}>
       {mappedTree && mappedTree.length ? (
         <Tree
+          width={'100%'}
           data={mappedTree}
           openByDefault={false}
           onRename={onRename}
           onMove={onMove}
           onDelete={onDelete}
-        />
+        >
+          {Bookmark}
+        </Tree>
       ) : null}
     </aside>
   );
