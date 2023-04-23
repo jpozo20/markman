@@ -5,3 +5,4 @@ singleQuote: true
 arrowParens: 'always'
 proseWrap: 'always'
 printWidth: 90
+bracketSameLine: true
