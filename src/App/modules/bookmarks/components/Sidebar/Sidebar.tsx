@@ -15,7 +15,7 @@ const Sidebar = () => {
   const dispatch = useAppDispatch();
   const state: FoldersState = useAppSelector((state) => state.folders);
 
-  const onCreate = ({ parentId, index, type }) => {};
+  //const onCreate = ({ parentId, index, type }) => {};
   const onRename = ({ id, name }) => {};
   const onMove = ({ dragIds, parentId, index }) => {};
   const onDelete = ({ ids }) => {};
@@ -26,7 +26,6 @@ const Sidebar = () => {
     }
   }, [useAppDispatch]);
 
-  console.log(state);
   let mappedTree;
   if (state && state.tree?.length) {
     const root = state.tree[0];
@@ -46,8 +45,7 @@ const Sidebar = () => {
           openByDefault={false}
           onRename={onRename}
           onMove={onMove}
-          onDelete={onDelete}
-        >
+          onDelete={onDelete}>
           {Bookmark}
         </Tree>
       ) : null}
