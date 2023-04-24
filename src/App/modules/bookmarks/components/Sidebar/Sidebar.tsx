@@ -40,6 +40,8 @@ const Sidebar = () => {
     <aside id="sidebar" className="bg-slate-800 grow-0 shrink" style={style}>
       {mappedTree && mappedTree.length ? (
         <Tree
+          indent={12}
+          rowHeight={32}
           width={'100%'}
           data={mappedTree}
           openByDefault={false}
