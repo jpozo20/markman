@@ -6,3 +6,21 @@ body {
   width: 100%;
   min-width: 600px;
 }
+
+/*CSS for styling treeitem on focus*/
+/* [role='treeitem'][aria-selected='true']:has(.node-item):focus-visible {
+  background-color: #8ab4f8;
+  outline: none;
+}
+[role='treeitem'][aria-selected='true']:focus-visible {
+  background-color: #8ab4f8;
+  outline: none;
+} */
+/* [role='treeitem'][aria-selected='true']:has(> .node-item) {
+  background-color: rgb(138, 180, 248);
+} */
+
+/* Background color when item has focus*/
+/* [role='treeitem'][aria-selected='true']:has(> .node-item):focus {
+  background-color: rgb(138, 180, 248);
+} */

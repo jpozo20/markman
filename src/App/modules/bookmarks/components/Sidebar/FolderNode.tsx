@@ -3,17 +3,12 @@ import { NodeRendererProps } from 'react-arborist';
 import { FaFolder, FaChevronRight, FaChevronDown } from 'react-icons/fa';
 import { BookmarkItem, BookmarkType } from '../../../../models/BookmarkTypes';
 
-const classNames = {
-  NodeItem: 'node-item',
-  NodeChevron: 'node-chevron',
-};
-
 /**
  * Chevron icon on the left of a folder
  * @param props isOpen: Whether the folder is open or closed
  */
 const Chevron = (props: HTMLProps<Element> & { isOpen: boolean }) => {
-  const chevronStyle = 'node-chevron mt-1 mr-1 hover:bg-gray-500';
+  const chevronStyle = 'node-chevron mt-1 mr-1';
   const chevron = props.isOpen ? (
     <FaChevronDown size={18} className={chevronStyle} onClick={props.onClick} />
   ) : (
@@ -22,44 +17,25 @@ const Chevron = (props: HTMLProps<Element> & { isOpen: boolean }) => {
   return chevron;
 };
 
-const Bookmark = ({ node, style, dragHandle }: NodeRendererProps<BookmarkItem>) => {
+/**
+ * Component that renders the Chevron and Folder icons and the folder name
+ */
+const FolderNode = ({ node, style, dragHandle }: NodeRendererProps<BookmarkItem>) => {
   const toggleNode = () => node.isInternal && node.toggle();
 
-  const handleNodeClick = (event) => {
-    const target = event.target as HTMLElement;
-    if (!target) return;
-
-    const classList = target.classList;
-    const parent = target.parentElement!;
-    const tagName = target.tagName.toLowerCase();
-
-    // Select the clicked node only if the target is not the Chevron
-    let isChevron =
-      tagName === 'path' && parent.classList.contains(classNames.NodeChevron);
-    if (!isChevron) isChevron = classList.contains(classNames.NodeChevron);
-
-    if (isChevron) {
-      event.stopPropagation();
-    } else {
-      console.log('nodeItem');
-    }
-  };
+  const folderStyle = 'node-item px-2 w-full flex flex-row';
+  const folderWithNoChildren = 'w-[18px] mt-1 mr-1';
 
   const hasFolderChildren = node.children?.some((child) => child.isInternal);
   const chevron =
     node.isInternal && hasFolderChildren ? (
       <Chevron isOpen={node.isOpen} onClick={toggleNode} />
     ) : (
-      <div className="w-[18px] mt-1 mr-1"></div>
+      <div className={folderWithNoChildren}></div>
     );
   if (node.data.type === BookmarkType.Folder && node.isInternal)
     return (
-      <div
-        ref={dragHandle}
-        style={style}
-        onClick={handleNodeClick}
-        className="node-item flex flex-row px-2 
-        text-gray-300 hover:bg-[#8AB4F8] hover:text-gray-900">
+      <div ref={dragHandle} style={style} className={folderStyle}>
         {chevron} <FaFolder size={24} />
         <p style={{ paddingLeft: '10px', fontSize: '1.5em' }}>{node.data.name}</p>
       </div>
@@ -68,7 +44,7 @@ const Bookmark = ({ node, style, dragHandle }: NodeRendererProps<BookmarkItem>) 
   return null;
 };
 
-export default Bookmark;
+export default FolderNode;
 
 // selected background: #8AB4F8; text-gray-900
 // hover background: bg-gray-600; text-gray-300

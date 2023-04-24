@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { Tree } from 'react-arborist';
 
+import { useAppDispatch, useAppSelector } from '../../../../store/store';
 import { FoldersState, getBookmarksTree } from '../../../../store/slices/folderSlice';
 
-import { useAppDispatch, useAppSelector } from '../../../../store/store';
-import Bookmark from './Bookmark';
+import FolderNode from './FolderNode';
+import FolderRow from './FolderRow';
 
 const style: React.CSSProperties = {
   height: '100vh',
@@ -43,12 +44,14 @@ const Sidebar = () => {
           indent={12}
           rowHeight={32}
           width={'100%'}
+          className="treeview"
           data={mappedTree}
           openByDefault={false}
           onRename={onRename}
           onMove={onMove}
-          onDelete={onDelete}>
-          {Bookmark}
+          onDelete={onDelete}
+          renderRow={FolderRow}>
+          {FolderNode}
         </Tree>
       ) : null}
     </aside>
