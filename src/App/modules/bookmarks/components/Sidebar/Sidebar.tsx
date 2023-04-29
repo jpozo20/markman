@@ -8,7 +8,6 @@ import FolderNode from './FolderNode';
 import FolderRow from './FolderRow';
 
 const style: React.CSSProperties = {
-  height: '100vh',
   flexBasis: '30%',
   minWidth: '256px',
 };
@@ -44,6 +43,7 @@ const Sidebar = () => {
           indent={12}
           rowHeight={32}
           width={'100%'}
+          height={1000}
           className="treeview"
           data={mappedTree}
           openByDefault={false}

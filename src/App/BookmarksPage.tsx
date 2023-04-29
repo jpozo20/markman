@@ -11,10 +11,10 @@ import BookmarksArea from './modules/bookmarks/components/BookmarksArea/Bookmark
 const BookmarksPage = (): JSX.Element => {
   return (
     <Provider store={store}>
-      <div className="w-full mx-auto max-w-8xl">
-        <div className="flex flex-col">
+      <div className="w-full mx-auto max-w-8xl" style={{ height: '100vh' }}>
+        <div className="h-full flex flex-col">
           <NavigationBar />
-          <div id="main-content" className="flex flex-row">
+          <div id="main-content" className="h-full flex flex-row">
             <Sidebar />
             <BookmarksArea />
           </div>
