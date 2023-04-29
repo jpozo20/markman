@@ -20,7 +20,11 @@ const Chevron = (props: HTMLProps<Element> & { isOpen: boolean }) => {
 /**
  * Component that renders the Chevron and Folder icons and the folder name
  */
-const FolderNode = ({ node, style, dragHandle }: NodeRendererProps<BookmarkItem>) => {
+const FolderNodeRenderer = ({
+  node,
+  style,
+  dragHandle,
+}: NodeRendererProps<BookmarkItem>) => {
   const toggleNode = () => node.isInternal && node.toggle();
 
   const folderStyle = 'node-item px-2 w-full flex flex-row';
@@ -44,7 +48,7 @@ const FolderNode = ({ node, style, dragHandle }: NodeRendererProps<BookmarkItem>
   return null;
 };
 
-export default FolderNode;
+export default FolderNodeRenderer;
 
 // selected background: #8AB4F8; text-gray-900
 // hover background: bg-gray-600; text-gray-300

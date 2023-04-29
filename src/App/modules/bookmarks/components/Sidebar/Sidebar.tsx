@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react';
-import { Tree } from 'react-arborist';
+import { NodeApi, Tree } from 'react-arborist';
 
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
-import { FoldersState, getBookmarksTree } from '../../../../store/slices/folderSlice';
+import {
+  FoldersState,
+  folderActions,
+  getBookmarksTree,
+} from '../../../../store/slices/folderSlice';
 
-import FolderNode from './FolderNode';
-import FolderRow from './FolderRow';
+import FolderNodeRenderer from '../TreeView/FolderNodeRenderer';
+import TreeRowRenderer from '../TreeView/TreeRowRenderer';
+import { mapFolders } from '../../../../utils/arrayUtils';
+import { BookmarkItem } from '../../../../models/BookmarkTypes';
 
 const style: React.CSSProperties = {
   flexBasis: '30%',
@@ -19,6 +25,10 @@ const Sidebar = () => {
   const onRename = ({ id, name }) => {};
   const onMove = ({ dragIds, parentId, index }) => {};
   const onDelete = ({ ids }) => {};
+  const onSelect = (selectedItems: NodeApi<BookmarkItem>[]) => {
+    const selectedFolder = selectedItems[0]?.data;
+    if (selectedFolder) dispatch(folderActions.selectFolder(selectedFolder));
+  };
 
   useEffect(() => {
     if (state && !state.tree?.length) {
@@ -26,14 +36,13 @@ const Sidebar = () => {
     }
   }, [useAppDispatch]);
 
-  let mappedTree;
+  let mappedTree: BookmarkItem[] | undefined;
   if (state && state.tree?.length) {
     const root = state.tree[0];
-    mappedTree = root.children?.map((folder) => ({
-      ...folder,
-    }));
-    //mappedTree = root.children;
-    console.log(mappedTree);
+
+    // Map and filter folders, since react-arborist shows a gap
+    // where non-folder items are
+    mappedTree = root.children?.flatMap(mapFolders);
   }
 
   return (
@@ -50,8 +59,9 @@ const Sidebar = () => {
           onRename={onRename}
           onMove={onMove}
           onDelete={onDelete}
-          renderRow={FolderRow}>
-          {FolderNode}
+          renderRow={TreeRowRenderer}
+          onSelect={onSelect}>
+          {FolderNodeRenderer}
         </Tree>
       ) : null}
     </aside>

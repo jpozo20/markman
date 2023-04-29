@@ -6,7 +6,7 @@ import { BookmarkItem } from '../../../../models/BookmarkTypes';
  * Component that draws the div where each node will be rendered.
  * You can customize hover, focus and selection state in this component.
  */
-const FolderRow = ({
+const TreeRowRenderer = ({
   node,
   innerRef,
   attrs,
@@ -52,5 +52,5 @@ const FolderRow = ({
   );
 };
 
-export default FolderRow;
+export default TreeRowRenderer;
 //aria-selected:bg-[#8AB4F8] aria-selected:text-gray-900

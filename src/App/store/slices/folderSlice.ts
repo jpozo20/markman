@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import { BookmarksAdapter } from '../../services/adapter/BookmarksAdapter';
 import { BookmarkItem, BookmarkType, BookmarkFolder } from '../../models/BookmarkTypes';
@@ -7,6 +7,7 @@ import { BookmarkItem, BookmarkType, BookmarkFolder } from '../../models/Bookmar
 export type FoldersState = {
   tree: BookmarkItem[] | undefined;
   error: string | null;
+  selectedFolder?: BookmarkItem;
 };
 const initialState: FoldersState = {
   tree: [],
@@ -17,6 +18,7 @@ const actionNames = {
   getBookmarksTree: 'folders/getBookmarksTree',
   getChildren: 'folders/getChildren',
   deleteFolder: 'folders/deleteFolder',
+  selectFolder: 'folders/selectFolder',
 } as const;
 
 const adapter = new BookmarksAdapter();
@@ -29,8 +31,8 @@ const getBookmarksTree = createAsyncThunk(actionNames.getBookmarksTree, async ()
 const getChildren = createAsyncThunk(
   actionNames.getChildren,
   async (folderId: string) => {
-    const children = await browser.bookmarks.getChildren(folderId);
-    return adapter.convertChildren(children);
+    const folder = await browser.bookmarks.getSubTree(folderId);
+    return adapter.convertChildren(folder[0]?.children);
   },
 );
 
@@ -44,7 +46,11 @@ const deleteFolder = createAsyncThunk(
 export const folderSlice = createSlice({
   name: 'folders',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    selectFolder: (state: FoldersState, action: PayloadAction<BookmarkItem>) => {
+      state.selectedFolder = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(getBookmarksTree.fulfilled, (state, action) => {
@@ -73,5 +79,6 @@ export const folderSlice = createSlice({
   },
 });
 
+export const folderActions = { ...folderSlice.actions };
 export { getBookmarksTree, getChildren, deleteFolder };
 export default folderSlice.reducer;
