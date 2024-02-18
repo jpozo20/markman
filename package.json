@@ -35,7 +35,7 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "flowbite": "^1.6.4",
-    "flowbite-react": "^0.4.2",
+    "flowbite-react": "^0.7.2",
     "prettier": "^2.8.8",
     "react": "18.2.0",
     "react-arborist": "^3.0.2",

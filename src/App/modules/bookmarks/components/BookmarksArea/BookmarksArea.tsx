@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Dropdown } from 'flowbite-react'
 
 import { getChildren } from '../../../../store/slices/folderSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
 
 import BookmarksTree from '../TreeView/BookmarksTree';
 import { BookmarkItem } from '../../../../models/BookmarkTypes';
+import { MenuItem } from './DropdownMenu/DropdownMenu';
+import BookmarksFolderMenu from './DropdownMenu/BookmarksFolderMenu';
 
 const BookmarksArea = () => {
   const dispatch = useAppDispatch();
@@ -23,9 +26,17 @@ const BookmarksArea = () => {
     loadItems();
   }, [selectedFolder]);
 
+  const menuItems: MenuItem[] = [{ label: "Juan Item 1", onClick: () => { } }, { label: "Pepe Item 2", onClick: () => { } }];
+  const folderMenu = (
+    <div className="flex justify-between items-center">
+      <p className='font-bold text-xl'>{selectedFolder?.name}</p>
+      <BookmarksFolderMenu items={menuItems} />
+    </div>
+  );
+
   return (
-    <main id="main-area" className="w-full px-8 py-6">
-      <p>Selected folder is {selectedFolder?.name}</p>
+    <main id="main-area" className="flex flex-col space-y-4 w-full px-8 py-6">
+      {selectedFolder ? folderMenu : null}
       <BookmarksTree items={items} />
     </main>
   );
