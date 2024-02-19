@@ -18,6 +18,7 @@ interface BookmarkItem {
   dateAdded?: number | null;
   parentId?: string;
   type?: BookmarkType;
+  pathFromRoot?: string;
 }
 
 /**
@@ -30,4 +31,11 @@ interface BookmarkFolder extends Omit<BookmarkItem, 'url'> {
   lastModified?: number;
 }
 
-export { BookmarkType, BookmarkItem, BookmarkFolder };
+interface BookmarksTree {
+  root: BookmarkItem;
+  bookmarksBar?: BookmarkItem[];
+  otherBookmarks?: BookmarkItem[];
+  mobileBookmarks?: BookmarkItem[];
+}
+
+export { BookmarkType, BookmarkItem, BookmarkFolder, BookmarksTree };
