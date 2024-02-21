@@ -1,9 +1,8 @@
-import browser from 'webextension-polyfill';
+import Browser from 'webextension-polyfill';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import { BookmarksAdapter } from '../../services/adapter/BookmarksAdapter';
 import { BookmarkItem, BookmarkType, BookmarkFolder } from '../../models/BookmarkTypes';
-import TreeStore from '../../services/TreeStore';
 
 export type FoldersState = {
   tree: BookmarkItem[] | undefined;
@@ -20,21 +19,21 @@ const actionNames = {
   getChildren: 'folders/getChildren',
   deleteFolder: 'folders/deleteFolder',
   selectFolder: 'folders/selectFolder',
+  deleteBookmarks: 'bookmarks/deleteBookmarks',
 } as const;
 
 const adapter = new BookmarksAdapter();
-const treeStore = new TreeStore();
+
 
 const getBookmarksTree = createAsyncThunk(actionNames.getBookmarksTree, async () => {
-  const tree = await browser.bookmarks.getTree();
-  const newTree = treeStore.createBookmarksTree(tree[0]);
+  const tree = await Browser.bookmarks.getTree();
   return adapter.convertTree(tree);
 });
 
 const getChildren = createAsyncThunk(
   actionNames.getChildren,
   async (folderId: string) => {
-    const folder = await browser.bookmarks.getSubTree(folderId);
+    const folder = await Browser.bookmarks.getSubTree(folderId);
     return adapter.convertChildren(folder[0]?.children);
   },
 );
@@ -42,11 +41,21 @@ const getChildren = createAsyncThunk(
 const deleteFolder = createAsyncThunk(
   actionNames.deleteFolder,
   async (folderId: string) => {
-    await browser.bookmarks.removeTree(folderId);
+    await Browser.bookmarks.removeTree(folderId);
   },
 );
 
-export const folderSlice = createSlice({
+const deleteBookmarks = createAsyncThunk(
+  actionNames.deleteBookmarks,
+  async (bookmarkIds: string[]) => {
+    if (!bookmarkIds || !bookmarkIds.length) return;
+    bookmarkIds.forEach(
+      async (bookmarkId) => await Browser.bookmarks.remove(bookmarkId),
+    );
+  },
+);
+
+export const browserSlice = createSlice({
   name: 'folders',
   initialState: initialState,
   reducers: {
@@ -78,10 +87,13 @@ export const folderSlice = createSlice({
         if (!parentIndex || +parentId < 0) return;
 
         state.tree = state.tree?.splice(parentIndex, 1);
+      })
+      .addCase(deleteBookmarks.fulfilled, (state, action)=>{
+
       });
   },
 });
 
-export const folderActions = { ...folderSlice.actions };
+export const folderActions = { ...browserSlice.actions };
 export { getBookmarksTree, getChildren, deleteFolder };
-export default folderSlice.reducer;
+export default browserSlice.reducer;

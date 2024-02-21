@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { folderSlice } from './slices/folderSlice';
+import { browserSlice } from './slices/browserSlice';
 import { bookmarkSlice } from './slices/bookmarkSlice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 export const store = configureStore({
   reducer: {
-    folders: folderSlice.reducer,
+    browserApi: browserSlice.reducer,
     bookmarks: bookmarkSlice.reducer,
   },
 });

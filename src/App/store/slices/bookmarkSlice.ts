@@ -1,8 +1,9 @@
-import browser from 'webextension-polyfill';
+import Browser from 'webextension-polyfill';
+import TreeStore from '../../services/TreeStore';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 type BookmarksNodeState = {
-  bookmarks: browser.Bookmarks.BookmarkTreeNode[];
+  bookmarks: Browser.Bookmarks.BookmarkTreeNode[];
   error: string | null;
 };
 const initialState: BookmarksNodeState = {
@@ -19,10 +20,13 @@ const deleteBookmarks = createAsyncThunk(
   async (bookmarkIds: string[]) => {
     if (!bookmarkIds || !bookmarkIds.length) return;
     bookmarkIds.forEach(
-      async (bookmarkId) => await browser.bookmarks.remove(bookmarkId),
+      async (bookmarkId) => await Browser.bookmarks.remove(bookmarkId),
     );
   },
 );
+
+// const treeStore = new TreeStore();
+// const newTree = await treeStore.createBookmarksTree(tree[0]);
 
 export const bookmarkSlice = createSlice({
   name: 'bookmarks',

@@ -1,6 +1,8 @@
-import Browser from 'webextension-polyfill';
-import { BookmarkFolder, BookmarkItem, BookmarkType, BookmarksTree } from "../models/BookmarkTypes";
+import browser from 'webextension-polyfill';
 import SearchTrie from './search/SearchTrie';
+import { BookmarkFolder, BookmarkItem, BookmarkType, BookmarksTree } from "../models/BookmarkTypes";
+
+import { saveBookmarksTree, loadBookmarksTree } from '../services/storage/storageService';
 
 class TreeStore {
     private _map: Map<string, BookmarkItem>;
@@ -13,10 +15,39 @@ class TreeStore {
         this._searchTrie = new SearchTrie();
     }
 
-    public createBookmarksTree(treeRoot: Browser.Bookmarks.BookmarkTreeNode): BookmarksTree | undefined {
-        const root = this.convertFolder(treeRoot);
+    public async createBookmarksTree(treeRoot: browser.Bookmarks.BookmarkTreeNode): Promise<BookmarksTree | undefined> {
+        try 
+        {
+            const root = this.convertFolder(treeRoot);
+            this._tree.root = root;
 
-        this._tree.root = root;
+            await saveBookmarksTree(this._tree);
+        } catch (error) {
+            console.log("Error creating bookmarks tree", error);
+        }
+
+        return this._tree;
+    }
+
+    public async saveBookmarksToStorage(tree: BookmarksTree): Promise<void>{
+        try 
+        {
+          await saveBookmarksTree(tree);
+        } catch (error) {
+            console.log("Error saving bookmarks tree", error);
+        }
+
+    }
+    public async loadBookmarksFromStorage(): Promise<BookmarksTree | undefined> {
+        try 
+        {
+            const tree = await loadBookmarksTree();
+            if (tree == undefined) return tree;
+            this._tree = tree;
+        } catch (error) {
+            console.log("Error occurred loading bookmarks", error);
+        }
+
         return this._tree;
     }
 
@@ -39,7 +70,7 @@ class TreeStore {
         console.log("Search results:", foundBookMarks);
     }
 
-    private convertBookmark(item: Browser.Bookmarks.BookmarkTreeNode, parenthPath: string = ""): BookmarkItem {
+    private convertBookmark(item: browser.Bookmarks.BookmarkTreeNode, parenthPath: string = ""): BookmarkItem {
         const pathFromRoot = parenthPath.concat(item.index!.toString());
 
         const adapted: BookmarkItem = {
@@ -54,7 +85,7 @@ class TreeStore {
         return adapted;
     }
 
-    private convertFolder(item: Browser.Bookmarks.BookmarkTreeNode, parenthPath: string = "", mapChildren: boolean = true): BookmarkFolder {
+    private convertFolder(item: browser.Bookmarks.BookmarkTreeNode, parenthPath: string = "", mapChildren: boolean = true): BookmarkFolder {
 
         const pathFromRoot = item.parentId ? parenthPath.concat(item.index!.toString()) : "";
 
@@ -74,7 +105,7 @@ class TreeStore {
     }
 
     convertChildren(
-        children: Browser.Bookmarks.BookmarkTreeNode[] | undefined,
+        children: browser.Bookmarks.BookmarkTreeNode[] | undefined,
         parenthPath: string = ""
     ): BookmarkItem[] | undefined {
         if (children == null || children == undefined) return undefined;

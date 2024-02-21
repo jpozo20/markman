@@ -66,6 +66,7 @@
     "jest-chrome": "^0.8.0",
     "node-html-parser": "^6.1.5",
     "nodemon": "^2.0.22",
+    "object-sizeof": "^2.6.4",
     "postcss-load-config": "^4.0.1",
     "rollup": "^3.19.1",
     "rollup-plugin-chrome-extension": "^3.6.12",

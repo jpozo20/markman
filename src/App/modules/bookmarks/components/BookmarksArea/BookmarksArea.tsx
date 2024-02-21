@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Dropdown } from 'flowbite-react'
 
-import { getChildren } from '../../../../store/slices/folderSlice';
+import { getChildren } from '../../../../store/slices/browserSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
 
 import BookmarksTree from '../TreeView/BookmarksTree';
@@ -12,7 +11,7 @@ import BookmarksFolderMenu from './DropdownMenu/BookmarksFolderMenu';
 const BookmarksArea = () => {
   const dispatch = useAppDispatch();
   const [items, setItems] = useState<BookmarkItem[]>([]);
-  const selectedFolder = useAppSelector((state) => state.folders.selectedFolder);
+  const selectedFolder = useAppSelector((state) => state.browserApi.selectedFolder);
 
   useEffect(() => {
     const loadItems = async () => {

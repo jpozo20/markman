@@ -6,7 +6,7 @@ import {
   FoldersState,
   folderActions,
   getBookmarksTree,
-} from '../../../../store/slices/folderSlice';
+} from '../../../../store/slices/browserSlice';
 
 import FolderNodeRenderer from '../TreeView/FolderNodeRenderer';
 import TreeRowRenderer from '../TreeView/TreeRowRenderer';
@@ -19,7 +19,7 @@ const style: React.CSSProperties = {
 };
 const Sidebar = () => {
   const dispatch = useAppDispatch();
-  const state: FoldersState = useAppSelector((state) => state.folders);
+  const state: FoldersState = useAppSelector((state) => state.browserApi);
 
   //const onCreate = ({ parentId, index, type }) => {};
   const onRename = ({ id, name }) => {};

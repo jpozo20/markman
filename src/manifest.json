@@ -16,5 +16,5 @@
   "chrome_url_overrides": {
     "bookmarks": "main/main.html"
   },
-  "permissions": ["bookmarks", "tabs"]
+  "permissions": ["bookmarks", "tabs", "storage"]
 }
