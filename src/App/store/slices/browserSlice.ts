@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import { BookmarkItem, BookmarkType, BookmarkFolder } from '../../models/BookmarkTypes';
 import TreeStore from '../../services/TreeStore';
+import { BookmarksAdapter } from '../../services/adapter/BookmarksAdapter';
 
 export type BrowserApiState = {
   error: string | null;
@@ -22,6 +23,7 @@ const actionNames = {
   deleteBookmarks: 'bookmarks/deleteBookmarks',
 } as const;
 
+const adapter = new BookmarksAdapter();
 const treeStore = TreeStore.getInstance();
 
 const getBookmarksTree = createAsyncThunk(actionNames.getBookmarksTree, async () => {
@@ -33,7 +35,7 @@ const getChildren = createAsyncThunk(
   actionNames.getChildren,
   async (folderId: string) => {
     const folder = await Browser.bookmarks.getSubTree(folderId);
-    return treeStore.convertChildren(folder[0]?.children);
+    return adapter.convertChildren(folder[0]?.children);
   },
 );
 

@@ -1,10 +1,13 @@
 import browser from 'webextension-polyfill';
 import SearchTrie from './search/SearchTrie';
-import { BookmarkFolder, BookmarkItem, BookmarkType, BookmarksTree } from "../models/BookmarkTypes";
+import { BookmarkItem, BookmarksTree } from "../models/BookmarkTypes";
 
-import { saveBookmarksTree, loadBookmarksTree } from '../services/storage/storageService';
+import { BookmarksAdapter } from './adapter/BookmarksAdapter';
+import { saveBookmarksTree, loadBookmarksTree } from './storage/storageService';
+
 
 class TreeStore {
+    private _adapter: BookmarksAdapter;
     private _map: Map<string, BookmarkItem>;
     private _tree: BookmarksTree;
     private _searchTrie: SearchTrie;
@@ -12,13 +15,15 @@ class TreeStore {
     private static _instance: TreeStore;
 
     private constructor() {
+
         this._tree = { root: { id: '', name: '' } };
         this._map = new Map<string, BookmarkItem>();
         this._searchTrie = new SearchTrie();
+        this._adapter = new BookmarksAdapter(this._map);
     }
 
     public static getInstance() {
-        if(!this._instance){
+        if (!this._instance) {
             this._instance = new TreeStore();
         }
         return this._instance;
@@ -26,7 +31,7 @@ class TreeStore {
 
     public async createBookmarksTree(treeRoot: browser.Bookmarks.BookmarkTreeNode): Promise<BookmarksTree | undefined> {
         try {
-            const root = this.convertFolder(treeRoot);
+            const root = this._adapter.convertFolder(treeRoot);
             this._tree.root = root;
 
             await saveBookmarksTree(this._tree);
@@ -57,6 +62,19 @@ class TreeStore {
         return this._tree;
     }
 
+    public getChildrenFromPath(path: string | undefined): BookmarkItem[] {
+        if (path == undefined || path == '') return [];
+        let currentChild: BookmarkItem = this._tree.root;
+        const indexList = path.split("/");
+        for (let currentIndex = 0; currentIndex < indexList.length; currentIndex++) {
+            let currentPathIndex = +indexList[currentIndex];
+
+            currentChild = currentChild.children![currentPathIndex];
+        }
+        return currentChild?.children || [];
+    }
+
+
     private testTrieSearch() {
         for (const [path, bookmark] of this._map) {
             this._searchTrie.indexBookmarkTitle(bookmark);
@@ -74,77 +92,6 @@ class TreeStore {
         }
 
         console.log("Search results:", foundBookMarks);
-    }
-
-    private convertBookmark(item: browser.Bookmarks.BookmarkTreeNode, parenthPath: string = ""): BookmarkItem {
-        
-        const currentIndex = item.index?.toString() || "";
-        const currentPath = parenthPath == "" ? currentIndex : "/" + currentIndex;
-        const pathFromRoot = parenthPath.concat(currentPath);
-
-        const adapted: BookmarkItem = {
-            ...item,
-            name: item.title,
-            type: BookmarkType.Bookmark,
-            children: undefined,
-            pathFromRoot
-        };
-
-        this._map.set(item.id, adapted);
-        return adapted;
-    }
-
-    private convertFolder(item: browser.Bookmarks.BookmarkTreeNode, parenthPath: string = "", mapChildren: boolean = true): BookmarkFolder {
-
-        const currentIndex = item.index?.toString() || "";
-        const currentPath = parenthPath == "" ? currentIndex : "/" + currentIndex;
-        const pathFromRoot = item.parentId ? parenthPath.concat(currentPath) : "";
-
-        let children;
-        if (mapChildren) children = this.convertChildren(item.children, pathFromRoot);
-
-        const adapted: BookmarkFolder = {
-            ...item,
-            name: item.title,
-            type: BookmarkType.Folder,
-            lastModified: item.dateGroupModified,
-            children,
-            pathFromRoot
-        };
-        this._map.set(item.id, adapted);
-        return adapted;
-    }
-
-    convertChildren(
-        children: browser.Bookmarks.BookmarkTreeNode[] | undefined,
-        parenthPath: string = ""
-    ): BookmarkItem[] | undefined {
-        if (children == null || children == undefined) return undefined;
-
-        const adaptedChildren: BookmarkItem[] = [];
-        for (const child of children) {
-            if (child.children) {
-                const adapted = this.convertFolder(child, parenthPath);
-                adaptedChildren.push(adapted);
-            } else {
-                const adapted = this.convertBookmark(child, parenthPath);
-                adaptedChildren.push(adapted);
-            }
-        }
-
-        return adaptedChildren;
-    }
-
-    public getChildrenFromPath(path: string | undefined): BookmarkItem[]{
-        if(path == undefined || path == '') return [];
-        let currentChild: BookmarkItem =  this._tree.root;
-        const indexList = path.split("/");
-        for(let currentIndex = 0; currentIndex < indexList.length; currentIndex++){
-            let currentPathIndex = +indexList[currentIndex];
-
-            currentChild = currentChild.children![currentPathIndex];
-        }
-        return currentChild?.children || [];
     }
 }
 export default TreeStore;
