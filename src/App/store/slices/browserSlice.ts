@@ -1,15 +1,15 @@
 import Browser from 'webextension-polyfill';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
-import { BookmarksAdapter } from '../../services/adapter/BookmarksAdapter';
 import { BookmarkItem, BookmarkType, BookmarkFolder } from '../../models/BookmarkTypes';
+import TreeStore from '../../services/TreeStore';
 
-export type FoldersState = {
-  tree: BookmarkItem[] | undefined;
+export type BrowserApiState = {
   error: string | null;
+  tree: BookmarkItem[] | undefined;
   selectedFolder?: BookmarkItem;
 };
-const initialState: FoldersState = {
+const initialState: BrowserApiState = {
   tree: [],
   error: '',
 };
@@ -22,19 +22,18 @@ const actionNames = {
   deleteBookmarks: 'bookmarks/deleteBookmarks',
 } as const;
 
-const adapter = new BookmarksAdapter();
-
+const treeStore = TreeStore.getInstance();
 
 const getBookmarksTree = createAsyncThunk(actionNames.getBookmarksTree, async () => {
   const tree = await Browser.bookmarks.getTree();
-  return adapter.convertTree(tree);
+  return treeStore.createBookmarksTree(tree[0]);
 });
 
 const getChildren = createAsyncThunk(
   actionNames.getChildren,
   async (folderId: string) => {
     const folder = await Browser.bookmarks.getSubTree(folderId);
-    return adapter.convertChildren(folder[0]?.children);
+    return treeStore.convertChildren(folder[0]?.children);
   },
 );
 
@@ -59,14 +58,15 @@ export const browserSlice = createSlice({
   name: 'folders',
   initialState: initialState,
   reducers: {
-    selectFolder: (state: FoldersState, action: PayloadAction<BookmarkItem>) => {
+    selectFolder: (state: BrowserApiState, action: PayloadAction<BookmarkItem>) => {
       state.selectedFolder = action.payload;
     },
   },
   extraReducers(builder) {
     builder
       .addCase(getBookmarksTree.fulfilled, (state, action) => {
-        state.tree = action.payload;
+        let root = action.payload?.root;
+        if(root != undefined) state.tree = [root];
       })
       .addCase(getBookmarksTree.rejected, (state, action) => {
         state.error = 'An error ocurred loading the bookmarks tree';
