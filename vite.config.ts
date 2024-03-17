@@ -22,7 +22,8 @@ export default defineConfig({
   publicDir,
   build: {
     outDir,
-    sourcemap: process.env.__DEV__ === 'true',
+    //sourcemap: process.env.__DEV__ === 'true',
+    sourcemap: 'inline',
     rollupOptions: {
       input: {
         //popup: resolve(pagesDir, 'popup', 'popup.html'),
