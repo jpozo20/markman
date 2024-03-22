@@ -29,16 +29,10 @@ function sortBookmarks(selectedFolder: BookmarkFolder, sortAction: SortActions) 
 }
 
 function sortByNameAsc(selectedFolder: BookmarkFolder): BookmarkFolder {
-
     if (selectedFolder.children == undefined) return selectedFolder;
 
     const childrenCopy = [...selectedFolder.children!];
     let sortedChildren = sortItemsBy(childrenCopy, sortDirection.ASC);
-    // sortedChildren = sortedChildren.map((item, index) => {
-    //     const newItem = { ...item };
-    //     newItem.index = index;
-    //     return newItem;
-    // });
     sortedChildren = sortedChildren.map(mapChildren);
 
     selectedFolder.children = sortedChildren;
@@ -46,15 +40,14 @@ function sortByNameAsc(selectedFolder: BookmarkFolder): BookmarkFolder {
 }
 
 function sortByNameDesc(selectedFolder: BookmarkFolder): BookmarkFolder {
+    if (selectedFolder.children == undefined) return selectedFolder;
 
-    const newFolder = { ...selectedFolder };
-    if (newFolder.children == undefined) return selectedFolder;
-
-    let sortedChildren = sortItemsBy(newFolder.children, sortDirection.DESC);
+    const childrenCopy = [...selectedFolder.children!];
+    let sortedChildren = sortItemsBy(childrenCopy, sortDirection.DESC);
     sortedChildren = sortedChildren.map(mapChildren);
 
-    newFolder.children = sortedChildren;
-    return newFolder;
+    selectedFolder.children = sortedChildren;
+    return selectedFolder;
 }
 
 function sortItemsBy(items: BookmarkItem[], sortBy: string): BookmarkItem[] {
@@ -78,10 +71,18 @@ function mapChildren(item: BookmarkItem, index) {
 
     const originalPath = newItem.pathFromRoot;
     const pathArray = originalPath?.split('/');
+
     pathArray?.pop();
     pathArray?.push(newItem.index!.toString());
 
     newItem.pathFromRoot = pathArray?.join("/");
+
+    // Update pathFromRoot of children inside subfolders
+    if (newItem.children != undefined) {
+        const parentPath = newItem.pathFromRoot;
+        newItem.children.forEach((item) => item.pathFromRoot = parentPath + "/0");
+        newItem.children = newItem.children.map(mapChildren);
+    }
     return newItem;
 }
 
