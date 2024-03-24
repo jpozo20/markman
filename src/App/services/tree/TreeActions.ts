@@ -1,5 +1,5 @@
 import { BookmarkActions, SortActions, UserActionPayload } from "../../models/BookmarkActions";
-import { BookmarkFolder, BookmarkItem } from "../../models/BookmarkTypes";
+import { BookmarkFolder, BookmarkItem, BookmarkType } from "../../models/BookmarkTypes";
 
 function executeAction(action: UserActionPayload): BookmarkItem | undefined {
     switch (action.actionType) {
@@ -11,7 +11,7 @@ function executeAction(action: UserActionPayload): BookmarkItem | undefined {
     }
 }
 
-const sortDirection = {
+const SortDirection = {
     ASC: "ASC",
     DESC: "DESC"
 }
@@ -19,32 +19,44 @@ const sortDirection = {
 function sortBookmarks(selectedFolder: BookmarkFolder, sortAction: SortActions) {
     switch (sortAction) {
         case SortActions.SortAscending:
-            return sortByNameAsc(selectedFolder);
+            return sortByName(selectedFolder, SortDirection.ASC);
         case SortActions.SortDecending:
-            return sortByNameDesc(selectedFolder);
+            return sortByName(selectedFolder, SortDirection.DESC);
+        case SortActions.SortAscendingByFolder:
+            return sortByFolder(selectedFolder, SortDirection.ASC);
+        case SortActions.SortDescendingByFolder:
+            return sortByFolder(selectedFolder, SortDirection.DESC);
         default:
             return selectedFolder;
     }
-
 }
 
-function sortByNameAsc(selectedFolder: BookmarkFolder): BookmarkFolder {
+function sortByName(selectedFolder: BookmarkFolder, sortDirection: string): BookmarkFolder {
     if (selectedFolder.children == undefined) return selectedFolder;
 
     const childrenCopy = [...selectedFolder.children!];
-    let sortedChildren = sortItemsBy(childrenCopy, sortDirection.ASC);
+    let sortedChildren = sortItemsBy(childrenCopy, sortDirection);
     sortedChildren = sortedChildren.map(mapChildren);
 
     selectedFolder.children = sortedChildren;
     return selectedFolder;
 }
 
-function sortByNameDesc(selectedFolder: BookmarkFolder): BookmarkFolder {
+function sortByFolder(selectedFolder: BookmarkFolder, sortDirection: string): BookmarkFolder {
     if (selectedFolder.children == undefined) return selectedFolder;
 
     const childrenCopy = [...selectedFolder.children!];
-    let sortedChildren = sortItemsBy(childrenCopy, sortDirection.DESC);
-    sortedChildren = sortedChildren.map(mapChildren);
+
+    const folders = childrenCopy.filter((item)=> item.type == BookmarkType.Folder);
+    const bookmarks = childrenCopy.filter((item)=> item.type == BookmarkType.Bookmark);
+
+    let sortedFolders = sortItemsBy(folders, sortDirection);
+    sortedFolders = sortedFolders.map(mapChildren);
+
+    let sortedBookmarks = sortItemsBy(bookmarks, sortDirection);
+    sortedBookmarks = sortedBookmarks.map(mapChildren);
+
+    const sortedChildren = sortedFolders.concat(sortedBookmarks);
 
     selectedFolder.children = sortedChildren;
     return selectedFolder;
@@ -56,8 +68,8 @@ function sortItemsBy(items: BookmarkItem[], sortBy: string): BookmarkItem[] {
         const nameA = itemA.name.toUpperCase();
         const nameB = itemB.name.toUpperCase();
 
-        if (sortBy == sortDirection.ASC) return nameA.localeCompare(nameB, 'en', { numeric: true });
-        if (sortBy == sortDirection.DESC) return nameB.localeCompare(nameA, 'en', { numeric: true });
+        if (sortBy == SortDirection.ASC) return nameA.localeCompare(nameB, 'en', { numeric: true });
+        if (sortBy == SortDirection.DESC) return nameB.localeCompare(nameA, 'en', { numeric: true });
         return 0;
     }
 
