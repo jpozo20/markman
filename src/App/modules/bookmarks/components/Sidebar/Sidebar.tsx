@@ -1,18 +1,22 @@
 import React, { useEffect } from 'react';
-import { NodeApi, Tree } from 'react-arborist';
 
+import TreeStore from '../../../../services/TreeStore';
+import { NodeApi, Tree } from 'react-arborist';
+import TreeRowRenderer from '../TreeView/TreeRowRenderer';
+import FolderNodeRenderer from '../TreeView/FolderNodeRenderer';
+
+
+import { asyncAppThunks } from '../../../../store/slices/appSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
 import {
-  BrowserApiState,
-  getBookmarksTree,
+  asyncBrowserThunks,
 } from '../../../../store/slices/browserSlice';
 
-import FolderNodeRenderer from '../TreeView/FolderNodeRenderer';
-import TreeRowRenderer from '../TreeView/TreeRowRenderer';
+
 import { mapFolders } from '../../../../utils/arrayUtils';
 import { BookmarkItem } from '../../../../models/BookmarkTypes';
-import { asyncBookmarkThunks, bookmarkActions } from '../../../../store/slices/bookmarkSlice';
-import TreeStore from '../../../../services/TreeStore';
+import { bookmarkActions } from '../../../../store/slices/bookmarkSlice';
+
 
 const style: React.CSSProperties = {
   flexBasis: '30%',
@@ -20,10 +24,8 @@ const style: React.CSSProperties = {
 };
 const Sidebar = () => {
   const dispatch = useAppDispatch();
-  const localState = useAppSelector((state) => state.bookmarks);
-  const browserState: BrowserApiState = useAppSelector((state) => state.browserApi);
+  const bookmarksLoading = useAppSelector((rootState) => rootState.appState.isLoadingBookmarks);
 
-  const treeStore = TreeStore.getInstance();
   //const onCreate = ({ parentId, index, type }) => {};
   const onRename = ({ id, name }) => { };
   const onMove = ({ dragIds, parentId, index }) => { };
@@ -33,25 +35,32 @@ const Sidebar = () => {
     if (selectedFolder) dispatch(bookmarkActions.selectSidebarItem(selectedFolder));
   };
 
-
-  const tree = treeStore.getTree();
   useEffect(() => {
 
-    // If bookmarks are not in localStorage, load from Browser
-    // and save them to localStorage
-    //treeStore.
+    // Load bookmarks from localStorage. If bookmarks are not in localStorage, 
+    // load from Browser and save them to localStorage
 
-    if (tree.root.children == undefined) {
-      const tree = browserState.tree;
-      if (tree && tree.length == 0) dispatch(getBookmarksTree());
-      else dispatch(asyncBookmarkThunks.loadBookmarksFromStorage());
+    async function loadBookmarks() {
+      if (!bookmarksLoading) return;
+
+      try {
+        let tree = await dispatch(asyncAppThunks.loadBookmarksFromStorage()).unwrap();
+        if (tree == undefined) tree = await dispatch(asyncBrowserThunks.getBookmarksTree()).unwrap();
+      } catch (error) {
+        console.log("Error loading bookmarks from useEffect");
+      }
     }
-  }, [useAppDispatch, browserState.tree?.length]);
 
+    loadBookmarks();
+  }, [useAppDispatch, bookmarksLoading]);
+
+
+  const treeStore = TreeStore.getInstance();
+  let bookmarksTree = treeStore.getTree();
 
   let mappedTree: BookmarkItem[] | undefined;
-  if (tree && tree.root) {
-    const root = tree.root;
+  if (bookmarksTree != undefined && bookmarksTree.root) {
+    const root = bookmarksTree.root;
 
     // Map and filter folders, since react-arborist shows a gap
     // where non-folder items are

@@ -16,17 +16,18 @@ const initialState: BrowserApiState = {
 };
 
 const actionNames = {
-  getBookmarksTree: 'folders/getBookmarksTree',
-  getChildren: 'folders/getChildren',
-  deleteFolder: 'folders/deleteFolder',
-  selectFolder: 'folders/selectFolder',
-  deleteBookmarks: 'bookmarks/deleteBookmarks',
+  getBookmarksTree: 'browser/getBookmarksTree',
+  getChildren: 'browser/getChildren',
+  deleteFolder: 'browser/deleteFolder',
+  selectFolder: 'browser/selectFolder',
+  deleteBookmarks: 'browser/deleteBookmarks',
 } as const;
 
 const adapter = new BookmarksAdapter();
 const treeStore = TreeStore.getInstance();
 
 const getBookmarksTree = createAsyncThunk(actionNames.getBookmarksTree, async () => {
+  console.log("Loading bookmarks from browser");
   const tree = await Browser.bookmarks.getTree();
   return treeStore.createBookmarksTree(tree[0]);
 });
@@ -57,7 +58,7 @@ const deleteBookmarks = createAsyncThunk(
 );
 
 export const browserSlice = createSlice({
-  name: 'folders',
+  name: 'browser',
   initialState: initialState,
   reducers: {
     selectFolder: (state: BrowserApiState, action: PayloadAction<BookmarkItem>) => {
@@ -96,6 +97,6 @@ export const browserSlice = createSlice({
   },
 });
 
-export const folderActions = { ...browserSlice.actions };
-export { getBookmarksTree, getChildren, deleteFolder };
+export const brwoserActions = { ...browserSlice.actions };
+export const asyncBrowserThunks =  { getBookmarksTree, getChildren, deleteFolder };
 export default browserSlice.reducer;
