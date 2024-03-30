@@ -2,6 +2,8 @@ import React from 'react';
 import { NodeRendererProps } from 'react-arborist';
 import { FaFolder, FaGlobe, FaEllipsisV } from 'react-icons/fa';
 import { BookmarkItem, BookmarkType } from '../../../../models/BookmarkTypes';
+import { DotsVertical } from '../../../../style/icons/DotsVertical';
+
 
 /**
  * Component that renders the Chevron and Folder icons and the folder name
@@ -26,7 +28,8 @@ const BookmarkNodeRenderer = ({
         overflow-hidden overflow-ellipsis whitespace-nowrap">
         {node.data.name}
       </p>
-      <FaEllipsisV className="ml-2" size={18} />
+      {/* <FaEllipsisV className="ml-2" size={18} /> */}
+      <DotsVertical />
     </div>
   );
 };

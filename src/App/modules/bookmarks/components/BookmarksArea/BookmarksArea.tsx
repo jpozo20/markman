@@ -5,9 +5,9 @@ import { bookmarkActions } from '../../../../store/slices/bookmarkSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
 
 import BookmarksTree from '../TreeView/BookmarksTree';
-import { MenuItem } from './DropdownMenu/DropdownMenu';
-import BookmarksFolderMenu from './DropdownMenu/BookmarksFolderMenu';
+
 import { BookmarkActions, SortActions, SortOptions, UserActionPayload } from '../../../../models/BookmarkActions';
+import DropdownMenu, { MenuItem } from '../../../ui/menu/DropdownMenu';
 
 
 const BookmarksArea = () => {
@@ -62,7 +62,7 @@ const BookmarksArea = () => {
   const folderMenu = (
     <div className="flex justify-between items-center">
       <p className='font-bold text-xl'>{sidebarSelectedItem?.name}</p>
-      <BookmarksFolderMenu items={menuItems} />
+      <DropdownMenu items={menuItems} icon='horizontal' />
     </div>
   );
 

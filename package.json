@@ -30,6 +30,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
     "@rollup/plugin-replace": "^5.0.2",
+    "@szhsin/react-menu": "^4.1.0",
     "@types/firefox-webext-browser": "^111.0.0",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.28",
@@ -58,6 +59,7 @@
     "@typescript-eslint/parser": "^5.55.0",
     "@vitejs/plugin-react-swc": "^3.3.0",
     "autoprefixer": "^10.4.14",
+    "clsx": "^2.1.0",
     "create-html-element": "^4.0.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.36.0",
