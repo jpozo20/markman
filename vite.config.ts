@@ -26,8 +26,6 @@ export default defineConfig({
     sourcemap: 'inline',
     rollupOptions: {
       input: {
-        //popup: resolve(pagesDir, 'popup', 'popup.html'),
-        //main: resolve(pagesDir, 'main', 'main.html'),
         popup: resolve(pagesDir, 'popup', 'popup.tsx'),
         main: resolve(pagesDir, 'main', 'main.tsx'),
         contentScript: resolve(root, 'contentScript.ts'),

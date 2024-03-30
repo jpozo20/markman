@@ -50,18 +50,20 @@ export default function copyHtmlOutput(): PluginOption {
     return parsedHtml.outerHTML;
   }
 
-  function injectAssets(htmlFile: string, bundle: OutputBundle) {
-    const parsedHtml = parse(htmlFile);
+  function injectAssets(htmlFile: any, htmlData: string, bundle: OutputBundle) {
+    const parsedHtml = parse(htmlData);
     const head = parsedHtml.querySelector('head');
 
     for (const fileName in bundle) {
+
       const file = bundle[fileName];
       if (file.type !== 'asset') continue;
 
       const relTag = generateRelTag(file.fileName, 'css');
       head?.appendChild(relTag);
-      return parsedHtml.outerHTML;
     }
+
+    return parsedHtml.outerHTML;
   }
 
   return {
@@ -78,12 +80,16 @@ export default function copyHtmlOutput(): PluginOption {
         if (!htmlFile) continue;
 
         const injectedHtml = injectScriptsToHtml(htmlFile, file);
-        const htmlWithAssets = injectAssets(injectedHtml, bundle) ?? injectedHtml;
+        colorLog('[plugin] Injected script files to ' + htmlFile.fileName, 'info');
+
+        const htmlWithAssets = injectAssets(htmlFile, injectedHtml, bundle) ?? injectedHtml;
+        colorLog('[plugin] Injected css files to ' + htmlFile.fileName, 'info');
 
         fs.writeFile(htmlFile.finalPath, htmlWithAssets, 'utf-8', (err) => {
           if (err) throw err;
         });
       }
+
       colorLog('[plugin] HTML files copied to output', 'success');
     },
   };
