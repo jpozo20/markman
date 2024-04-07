@@ -37,7 +37,9 @@ const FolderNodeRenderer = ({
     ) : (
       <div className={folderWithNoChildren}></div>
     );
-  if (node.data.type === BookmarkType.Folder && node.isInternal)
+  
+  // node.isInternal won't show folders with empty empty children
+  if (node.data.type === BookmarkType.Folder)
     return (
       <div ref={dragHandle} style={style} className={folderStyle}>
         {chevron} <FaFolder size={24} />
