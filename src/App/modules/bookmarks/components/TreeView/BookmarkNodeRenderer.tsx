@@ -4,7 +4,6 @@ import { FaFolder, FaGlobe, FaEllipsisV } from 'react-icons/fa';
 import { BookmarkItem, BookmarkType } from '../../../../models/BookmarkTypes';
 import { DotsVertical } from '../../../../style/icons/DotsVertical';
 
-
 /**
  * Component that renders the Chevron and Folder icons and the folder name
  */
@@ -12,7 +11,8 @@ const BookmarkNodeRenderer = ({
   node,
   style,
   dragHandle,
-}: NodeRendererProps<BookmarkItem>) => {
+}: NodeRendererProps<BookmarkItem>,
+  onItemMenuClick: (event: React.MouseEvent) => void) => {
   const isFolder = node.data.type == BookmarkType.Folder;
   const iconStyle = 'ml-1';
   const itemStyle = 'node-item px-2 w-full flex flex-row items-center';
@@ -29,7 +29,10 @@ const BookmarkNodeRenderer = ({
         {node.data.name}
       </p>
       {/* <FaEllipsisV className="ml-2" size={18} /> */}
-      <DotsVertical />
+      <div className='cursor-pointer hover:bg-gray-700 rounded-full node-menu' onClick={onItemMenuClick}>
+        <DotsVertical />
+      </div>
+
     </div>
   );
 };
