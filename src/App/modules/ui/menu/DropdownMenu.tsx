@@ -35,7 +35,7 @@ const DropdownMenu = (props: MenuProps) => {
     return (
         <Menu menuButton={menuButton} transition>
             {props.items && props.items.map((item)=>{
-                return <MenuItem onClick={item.onClick}>{item.label}</MenuItem>
+                return <MenuItem title={item.label} onClick={item.onClick}>{item.label}</MenuItem>
             })}
         </Menu>
     );

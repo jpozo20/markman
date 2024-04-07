@@ -6,8 +6,10 @@ import "@szhsin/react-menu/dist/transitions/slide.css";
 
 import { menuClassName } from './MenuStyle';
 import { MenuItem, MenuProps } from './DropdownMenu';
+import { BookmarkItem } from '../../../models/BookmarkTypes';
 
 type ContextMenuProps = MenuProps & {
+    items?: BookmarkItem[];
     isOpen?: boolean;
     anchorRef?: any;
     anchorPoint?: { x: number, y: number } | undefined
@@ -57,16 +59,16 @@ const ContextMenu = (props: ContextMenuProps) => {
     return (
         <ControlledMenu
             menuClassName={menuClassName}
-            align={menuAlign} 
+            align={menuAlign}
             direction="bottom"
             state={opened}
             onClose={onMenuClose}
-            anchorPoint={anchorPoint}
+            anchorPoint={anchorPoint}>
+
+            {props.items && props.items.map((item) => {
+                return <MenuItem title={item.label} onClick={item.onClick}>{item.label}</MenuItem>
+            })}
             
-        >
-            <MenuItem title='Menu 1' children={'Menu 1'} />
-            <MenuItem title='Menu 2' children={'Menu 2'} />
-            <MenuItem title='Menu 3' children={'Menu 3'} />
         </ControlledMenu>
     )
 

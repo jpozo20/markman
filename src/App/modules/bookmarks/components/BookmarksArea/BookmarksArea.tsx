@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import { appThunks } from '../../../../store/slices/appSlice';
 import { bookmarkActions } from '../../../../store/slices/bookmarkSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
 
 import BookmarksTree from '../TreeView/BookmarksTree';
-
-import { BookmarkActions, SortActions, SortOptions, UserActionPayload } from '../../../../models/BookmarkActions';
-import DropdownMenu, { MenuItem } from '../../../ui/menu/DropdownMenu';
+import DropdownMenu from '../../../ui/menu/DropdownMenu';
+import useMenuItems from '../../hooks/useMenuItems';
 
 
 const BookmarksArea = () => {
@@ -16,6 +14,7 @@ const BookmarksArea = () => {
   const selectedFolder = useAppSelector(state => state.bookmarks.selectedFolder);
   const sidebarSelectedItem = useAppSelector(state => state.bookmarks.sidebarSelectedItem);
 
+  const [menuItems] = useMenuItems(selectedFolder);
 
   useEffect(() => {
     const loadItems = () => {
@@ -30,34 +29,6 @@ const BookmarksArea = () => {
     loadItems();
   }, [sidebarSelectedItem]);
 
-  const createMenuItems = () => {
-    if (sidebarSelectedItem == undefined || selectedFolder == undefined) return [];
-
-    const menuItems: MenuItem[] = [];
-    const sortOptions = SortActions;
-    for (const [action, name] of Object.entries(sortOptions)) {
-
-      const label = SortOptions[name];
-      const menuItem: MenuItem = {
-        label,
-        onClick: () => {
-          console.log("Clicked option " + label)
-          const payload: UserActionPayload = {
-            items: [selectedFolder],
-            actionType: BookmarkActions.SortActions,
-            executedAction: SortActions[action]
-          }
-          dispatch(appThunks.executeBookmarkAction(payload));
-        }
-      }
-      menuItems.push(menuItem);
-    }
-
-    return menuItems;
-  }
-
-  //const menuItems: MenuItem[] = [{ label: "Juan Item 1", onClick: () => { } }, { label: "Pepe Item 2", onClick: () => { } }];
-  const menuItems: MenuItem[] = createMenuItems();
 
   const folderMenu = (
     <div className="flex justify-between items-center">

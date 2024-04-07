@@ -5,6 +5,7 @@ import TreeRowRenderer from './TreeRowRenderer';
 import BookmarkNodeRenderer from './BookmarkNodeRenderer';
 import { BookmarkItem } from '../../../../models/BookmarkTypes';
 import useContextMenu from '../../hooks/useContextMenu';
+import useMenuItems from '../../hooks/useMenuItems';
 
 
 type propsType = {
@@ -17,7 +18,8 @@ const BookmarksTree = ({ items }: propsType) => {
   const onMove = ({ dragIds, parentId, index }) => { };
   const onDelete = ({ ids }) => { };
 
-  const [{ onContextMenu, onItemMenuClick }, contextMenu] = useContextMenu([]);
+  const [_, contextMenuItems] = useMenuItems(items);
+  const [{ onContextMenu, onItemMenuClick }, contextMenu] = useContextMenu(contextMenuItems);
 
   return (
     <>
