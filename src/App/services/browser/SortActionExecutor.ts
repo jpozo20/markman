@@ -1,25 +1,12 @@
-import { BookmarkActions, SortActions, UserActionPayload } from "../../models/BookmarkActions";
-import { BookmarkFolder, BookmarkItem, BookmarkType } from "../../models/BookmarkTypes";
-
-function executeAction(action: UserActionPayload): BookmarkItem | undefined {
-    switch (action.actionType) {
-        case BookmarkActions.SortActions:
-            if (action.items.length == 1) return sortBookmarks(action.items[0], action.executedAction as SortActions);
-            return;
-        case BookmarkActions.UrlActions:
-            
-            return;
-        default:
-            return;
-    }
-}
+import { SortActions } from "../../models/BookmarkActions";
+import { BookmarkFolder, BookmarkType, BookmarkItem } from "../../models/BookmarkTypes";
 
 const SortDirection = {
     ASC: "ASC",
     DESC: "DESC"
 }
 
-function sortBookmarks(selectedFolder: BookmarkFolder, sortAction: SortActions) {
+export function sortBookmarks(selectedFolder: BookmarkFolder, sortAction: SortActions) {
     switch (sortAction) {
         case SortActions.SortAscending:
             return sortByName(selectedFolder, SortDirection.ASC);
@@ -100,5 +87,3 @@ function mapChildren(item: BookmarkItem, index) {
     }
     return newItem;
 }
-
-export { executeAction, sortBookmarks };

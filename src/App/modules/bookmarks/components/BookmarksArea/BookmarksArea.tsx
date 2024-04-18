@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store/store';
 
 import BookmarksTree from '../TreeView/BookmarksTree';
 import DropdownMenu from '../../../ui/menu/DropdownMenu';
+
 import useMenuItems from '../../hooks/useMenuItems';
 
 
@@ -15,7 +16,7 @@ const BookmarksArea = () => {
   const sidebarSelectedItem = useAppSelector(state => state.bookmarks.sidebarSelectedItem);
 
   const [menuItems] = useMenuItems(selectedFolder);
-
+  
   useEffect(() => {
     const loadItems = () => {
       try {
@@ -27,6 +28,16 @@ const BookmarksArea = () => {
       }
     };
     loadItems();
+  }, [sidebarSelectedItem]);
+
+  useEffect(()=>{
+
+    const loadMenu = async () => {
+      // const [dropdownItems] = await getMenuItems(selectedFolder);
+      // setMenuItems(dropdownItems);
+    }
+
+    loadMenu();
   }, [sidebarSelectedItem]);
 
 

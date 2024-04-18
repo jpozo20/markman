@@ -18,9 +18,13 @@ const initialState: BrowserApiState = {
 const actionNames = {
   getBookmarksTree: 'browser/getBookmarksTree',
   getChildren: 'browser/getChildren',
+
   deleteFolder: 'browser/deleteFolder',
   selectFolder: 'browser/selectFolder',
   deleteBookmarks: 'browser/deleteBookmarks',
+
+  getExistingWindows: 'browser/getExistingWindows',
+  getExistingIncognitoWindows: 'browser/getExistingIncognitoWindows'
 } as const;
 
 const adapter = new BookmarksAdapter();
@@ -57,6 +61,24 @@ const deleteBookmarks = createAsyncThunk(
   },
 );
 
+const getExistingWindows = createAsyncThunk(
+  actionNames.getExistingWindows,
+  async () => {
+    const windows = await Browser.windows.getAll({ windowTypes: ['normal'], populate: true });
+    const normalWindows = windows.filter((window) => window.incognito == false);
+    return normalWindows;
+  }
+);
+
+const getExistingIncognitoWindows = createAsyncThunk(
+  actionNames.getExistingWindows,
+  async () => {
+    const windows = await Browser.windows.getAll({ windowTypes: ['normal'], populate: true });
+    const normalWindows = windows.filter((window) => window.incognito == true);
+    return normalWindows;
+  }
+);
+
 export const browserSlice = createSlice({
   name: 'browser',
   initialState: initialState,
@@ -69,7 +91,7 @@ export const browserSlice = createSlice({
     builder
       .addCase(getBookmarksTree.fulfilled, (state, action) => {
         let root = action.payload?.root;
-        if(root != undefined) state.tree = [root];
+        if (root != undefined) state.tree = [root];
       })
       .addCase(getBookmarksTree.rejected, (state, action) => {
         state.error = 'An error ocurred loading the bookmarks tree';
@@ -91,12 +113,12 @@ export const browserSlice = createSlice({
 
         state.tree = state.tree?.splice(parentIndex, 1);
       })
-      .addCase(deleteBookmarks.fulfilled, (state, action)=>{
+      .addCase(deleteBookmarks.fulfilled, (state, action) => {
 
       });
   },
 });
 
 export const brwoserActions = { ...browserSlice.actions };
-export const asyncBrowserThunks =  { getBookmarksTree, getChildren, deleteFolder };
+export const asyncBrowserThunks = { getBookmarksTree, getChildren, deleteFolder, getExistingWindows, getExistingIncognitoWindows };
 export default browserSlice.reducer;

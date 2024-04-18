@@ -1,9 +1,11 @@
 import { AnyAction, createAsyncThunk, createSlice, ThunkAction } from "@reduxjs/toolkit";
 
-import { UserActionPayload } from "../../models/BookmarkActions";
+import { BookmarkActions, UserActionPayload } from "../../models/BookmarkActions";
 import { RootState } from "../store";
 import TreeStore from "../../services/TreeStore";
 import { bookmarkActions } from "./bookmarkSlice";
+
+import * as UrlActionExecutor from "../../services/browser/UrlActionExecutor";
 
 const actionNames = {
     executeAction: 'app/executeAction',
@@ -75,7 +77,11 @@ export const appStateSlice = createSlice({
 });
 
 const executeBookmarkAction = (action: UserActionPayload): VoidThunk<RootState> => (dispatch, getState) => {
-    dispatch(bookmarkActions.executeAction(action));
+    if(action.actionType == BookmarkActions.SortActions){
+        dispatch(bookmarkActions.executeAction(action));
+    } else {
+        UrlActionExecutor.openBookmarks(action);
+    }
 }
 
 export const appThunks = { executeBookmarkAction };

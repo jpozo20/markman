@@ -1,6 +1,5 @@
 import React from 'react'
-import { Menu as MenuInner, MenuItem as MenuItemInner, MenuButton } from '@szhsin/react-menu';
-import { MenuItemProps as InnerMenuItemProps, MenuProps as InnerMenuProps} from '@szhsin/react-menu';
+import { Menu as MenuInner, MenuItem as MenuItemInner, SubMenu as SubMenuInner } from '@szhsin/react-menu';
 
 import '@szhsin/react-menu/dist/core.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
@@ -15,10 +14,20 @@ export const menuClassName = ({ state }) =>
 
 export const menuItemClassName = ({ hover, disabled, submenu }) => 
         `rounded-md px-2 py-1 focus:outline-none 
-        ${hover && "text-white bg-gray-600"} ${disabled && "text-gray-400"} ${submenu && "flex items-center"}`;
+        ${hover && "text-white bg-gray-600"} ${disabled && "text-gray-400"} ${submenu && ""}`;
 
-export const Menu = (props) => <MenuInner {...props} menuClassName={menuClassName} align="end" direction="bottom" />;
+export const MenuComponent = (props) => <MenuInner {...props} menuClassName={menuClassName} align="end" direction="bottom" />;
 
-export const MenuItem = (props) => (
+export const MenuItemComponent = (props) => (
     <MenuItemInner {...props} className={menuItemClassName} />
 );
+
+export const SubMenuComponent = (props) => (
+    <SubMenuInner
+      {...props}
+      shift={-7}
+      className="relative"
+      menuClassName={menuClassName}
+      itemProps={{ className: menuItemClassName }}
+    />
+)

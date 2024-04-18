@@ -62,6 +62,7 @@ export type UserActions = typeof ItemActions | typeof SortActions | typeof UrlAc
 export type UserActionPayload = {
     items: BookmarkItem[],
     actionType: BookmarkActions,
-    executedAction: UserActions
+    executedAction: UserActions,
+    param?: number | string
 }
 

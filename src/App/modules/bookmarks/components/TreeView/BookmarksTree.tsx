@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tree } from 'react-arborist';
 
 import TreeRowRenderer from './TreeRowRenderer';
 import BookmarkNodeRenderer from './BookmarkNodeRenderer';
 import { BookmarkItem } from '../../../../models/BookmarkTypes';
-import useContextMenu from '../../hooks/useContextMenu';
+
 import useMenuItems from '../../hooks/useMenuItems';
+import useContextMenu from '../../hooks/useContextMenu';
+import { useAppSelector } from '../../../../store/store';
 
 
 type propsType = {
@@ -18,7 +20,10 @@ const BookmarksTree = ({ items }: propsType) => {
   const onMove = ({ dragIds, parentId, index }) => { };
   const onDelete = ({ ids }) => { };
 
-  const [_, contextMenuItems] = useMenuItems(items);
+  
+  const selectedFolder = useAppSelector(state => state.bookmarks.selectedFolder);
+
+  const [_, contextMenuItems] = useMenuItems(selectedFolder);
   const [{ onContextMenu, onItemMenuClick }, contextMenu] = useContextMenu(contextMenuItems);
 
   return (

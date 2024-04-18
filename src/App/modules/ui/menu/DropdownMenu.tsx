@@ -2,23 +2,18 @@ import React from 'react'
 import { MenuButton } from '@szhsin/react-menu';
 
 import * as MenuStyle from './MenuStyle';
-import { Menu, MenuItem } from './MenuStyle';
-
+import { MenuComponent, MenuItemComponent } from './MenuStyle';
+import { MenuItem as MenuItemT } from '../../../models/MenuTypes';
 
 import '@szhsin/react-menu/dist/core.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 
-import { DotsHorizontal } from '../../../style/icons/DotsHorizontal';
 import { DotsVertical } from '../../../style/icons/DotsVertical';
+import { DotsHorizontal } from '../../../style/icons/DotsHorizontal';
 
 
-export type MenuItem = {
-    label: string;
-    onClick: () => void;
-    subItems?: MenuItem[]
-}
 export type MenuProps = {
-    items: MenuItem[];
+    items: MenuItemT[];
     style?: string;
     buttonStyle?: string;
     icon?: 'horizontal' | 'vertical'
@@ -33,13 +28,13 @@ const DropdownMenu = (props: MenuProps) => {
 
     const menuButton = <MenuButton className={actualButtonStyle}> {icon} </MenuButton>;
     return (
-        <Menu menuButton={menuButton} transition>
+        <MenuComponent menuButton={menuButton} transition>
             {props.items && props.items.map((item)=>{
-                return <MenuItem title={item.label} onClick={item.onClick}>{item.label}</MenuItem>
+                return <MenuItemComponent title={item.label} onClick={item.onClick}>{item.label}</MenuItemComponent>
             })}
-        </Menu>
+        </MenuComponent>
     );
 
 }
-export {Menu, MenuItem}
+
 export default DropdownMenu;
