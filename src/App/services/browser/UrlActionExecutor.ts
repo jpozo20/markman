@@ -32,7 +32,6 @@ export async function openBookmarks(action: UserActionPayload) {
 
 async function openBookmarksCurrentWindow(bookmarks: BookmarkItem[]) {
     const allBookmarks = mapBookmarks(bookmarks);
-    return;
 
     //const currentWindow = await Browser.windows.getCurrent();
     for (const bookmark of allBookmarks) {
@@ -44,7 +43,6 @@ async function openBookmarksCurrentWindow(bookmarks: BookmarkItem[]) {
 
 async function openBookmarksNewWindow(bookmarks: BookmarkItem[], isIncognito: boolean = false) {
     const allBookmarks = mapBookmarks(bookmarks);
-    return;
 
     await Browser.windows.create({
         incognito: isIncognito,
@@ -52,18 +50,8 @@ async function openBookmarksNewWindow(bookmarks: BookmarkItem[], isIncognito: bo
     });
 }
 
-// async function openBookmarksNewIncognito(bookmarks: BookmarkItem[]) {
-//     const allBookmarks = mapBookmarks(bookmarks);
-
-//     await Browser.windows.create({
-//         incognito: true,
-//         url: allBookmarks.map((bookmark) => bookmark.url!)
-//     });
-// }
-
 async function openBookmarksExistingWindow(bookmarks: BookmarkItem[], windowId: number) {
     const allBookmarks = mapBookmarks(bookmarks);
-    return;
 
     for (const bookmark of allBookmarks) {
         await Browser.tabs.create({
@@ -71,6 +59,7 @@ async function openBookmarksExistingWindow(bookmarks: BookmarkItem[], windowId: 
             url: bookmark.url
         });
     }
+     await Browser.windows.update(windowId, {focused: true});
 }
 
 

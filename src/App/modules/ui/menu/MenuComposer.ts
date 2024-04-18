@@ -53,7 +53,7 @@ const composeItemContextMenu = (existingWindows: Browser.Windows.Window[], incog
 
         return {
             label,
-            action: UrlActions.Open_ExistingWindow,
+            action: UrlActions.OpenIncognito_ExistingWindow,
             type: MenuItemType.MenuAction,
             param: incognitoWindow.id
         }

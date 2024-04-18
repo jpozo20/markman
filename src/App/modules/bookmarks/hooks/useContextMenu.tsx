@@ -10,9 +10,8 @@ const useContextMenu = (items: any[]) => {
     const [contextAnchorPoint, setContextAnchorPoint] = useState<any>(undefined);
 
     const onContextMenu = (event: React.MouseEvent) => {
-        if (typeof document.hasFocus === 'function' && !document.hasFocus()) return;
-
         event.preventDefault();
+        
         setContextAnchorPoint({ x: event.clientX, y: event.clientY });
         setContextMenuRef(null);
         setMenuOpen(true);
