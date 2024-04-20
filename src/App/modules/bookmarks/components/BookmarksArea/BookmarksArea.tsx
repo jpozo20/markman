@@ -4,9 +4,7 @@ import { bookmarkActions } from '../../../../store/slices/bookmarkSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
 
 import BookmarksTree from '../TreeView/BookmarksTree';
-import DropdownMenu from '../../../ui/menu/DropdownMenu';
-
-import useMenuItems from '../../hooks/useMenuItems';
+import FolderMenu from './FolderMenu';
 
 
 const BookmarksArea = () => {
@@ -15,8 +13,6 @@ const BookmarksArea = () => {
   const selectedFolder = useAppSelector(state => state.bookmarks.selectedFolder);
   const sidebarSelectedItem = useAppSelector(state => state.bookmarks.sidebarSelectedItem);
 
-  const [menuItems] = useMenuItems(selectedFolder);
-  
   useEffect(() => {
     const loadItems = () => {
       try {
@@ -30,27 +26,10 @@ const BookmarksArea = () => {
     loadItems();
   }, [sidebarSelectedItem]);
 
-  useEffect(()=>{
-
-    const loadMenu = async () => {
-      // const [dropdownItems] = await getMenuItems(selectedFolder);
-      // setMenuItems(dropdownItems);
-    }
-
-    loadMenu();
-  }, [sidebarSelectedItem]);
-
-
-  const folderMenu = (
-    <div className="flex justify-between items-center">
-      <p className='font-bold text-xl'>{sidebarSelectedItem?.name}</p>
-      <DropdownMenu items={menuItems} icon='horizontal' />
-    </div>
-  );
 
   return (
     <main id="main-area" className="flex flex-col space-y-4 w-full px-8 py-6">
-      {sidebarSelectedItem ? folderMenu : null}
+      {sidebarSelectedItem ? <FolderMenu folderName={sidebarSelectedItem?.name} /> : null}
       <BookmarksTree items={selectedFolder?.children} />
     </main>
   );
