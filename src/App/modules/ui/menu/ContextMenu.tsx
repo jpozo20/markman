@@ -6,8 +6,8 @@ import "@szhsin/react-menu/dist/transitions/slide.css";
 
 import { MenuProps } from './DropdownMenu';
 import { BookmarkItem } from '../../../models/BookmarkTypes';
-import { MenuGroup, MenuItem, MenuItemType } from '../../../models/MenuTypes';
-import { menuClassName, MenuItemComponent, SubMenuComponent } from './MenuStyle';
+import { MenuAction, MenuGroup, MenuItem, MenuItemType } from '../../../models/MenuTypes';
+import { menuClassName, MenuItemComponent, SubMenuComponent, SubMenuItemComponent } from './MenuStyle';
 
 type ContextMenuProps = MenuProps & {
     items?: BookmarkItem[];
@@ -57,7 +57,7 @@ const ContextMenu = (props: ContextMenuProps) => {
     // Context menu is anchorRef == null
     const menuAlign = props.anchorRef == null ? 'start' : 'end';
 
-    const mapMenuItems = (menuItem: MenuItem) => {
+    const mapMenuItems = (menuItem: MenuItem, isSubmenuItem = false) => {
         if (menuItem.type == MenuItemType.MenuDivider) return <MenuDivider className="bg-gray-700 h-0.5" />
 
         if (menuItem.type == MenuItemType.MenuGroup) {
@@ -65,12 +65,14 @@ const ContextMenu = (props: ContextMenuProps) => {
             const isDisabled = menuGroup.items.length == 0;
 
             const group = <SubMenuComponent disabled={isDisabled} label={menuGroup.label}>
-                            {menuGroup.items.map(mapMenuItems)}
+                            {menuGroup.items.map((item)=>mapMenuItems(item, true))}
                           </SubMenuComponent>;
             return group;
         }
 
-        return <MenuItemComponent title={menuItem.label} onClick={menuItem.onClick}>{menuItem.label}</MenuItemComponent>
+        const action = menuItem as MenuAction;
+        if(isSubmenuItem) return <SubMenuItemComponent title={action.label} onClick={action.onClick}>{action.label}</SubMenuItemComponent>
+        return <MenuItemComponent title={action.label} onClick={action.onClick}>{menuItem.label}</MenuItemComponent>
     }
 
     return (
@@ -82,7 +84,7 @@ const ContextMenu = (props: ContextMenuProps) => {
             onClose={onMenuClose}
             anchorPoint={anchorPoint}>
 
-            {props.items && props.items.map(mapMenuItems)}
+            {props.items && props.items.map((item)=>mapMenuItems(item))}
 
         </ControlledMenu>
     )

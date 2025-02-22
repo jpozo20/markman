@@ -11,11 +11,20 @@ export const defaultButtonStyle = clsx('inline-flex items-center font-medium mx-
 export const menuClassName = ({ state }) =>
     `box-border z-50 text-sm p-1.5 border rounded-md  min-w-[9rem]
      bg-gray-900 text-gray-300 border-gray-400 shadow-lg select-none focus:outline-none
-     ${state === "opening" && "animate-fadeIn"} ${state === "closing" && "animate-fadeOut"}`;
+     ${ clsx(state === "opening" && "animate-fadeIn") } ${ clsx(state === "closing" && "animate-fadeOut") }`;
 
 export const menuItemClassName = ({ hover, disabled, submenu }) => 
-        `rounded-md px-2 py-1 focus:outline-none 
-        ${hover && "text-white bg-gray-600"} ${disabled && "text-gray-400"} ${submenu && ""}`;
+        `rounded-md px-2 py-1 focus:outline-none
+        ${ clsx(hover && "text-white bg-gray-600") } ${ clsx(disabled && "text-gray-400") }`;
+
+export const subMenuClassName = ({ hover, open, disabled }) => 
+    `rounded-md px-2 py-1 focus:outline-none
+    ${ clsx(hover && "text-white bg-gray-600") } ${ clsx(disabled && "text-gray-400") } ${ clsx(hover && open && "esto-es-submenu") }`;
+
+export const subMenuItemClassName = ({ hover, open, disabled }) => 
+    `rounded-md px-2 py-1 focus:outline-none 
+    max-w-[20rem] block overflow-hidden text-ellipsis whitespace-nowrap
+    ${ clsx(hover && "text-white bg-gray-600") } ${ clsx(disabled && "text-gray-400") }`;
 
 export const MenuComponent = (props) => <MenuInner {...props} menuClassName={menuClassName} align="end" direction="bottom" />;
 
@@ -29,6 +38,10 @@ export const SubMenuComponent = (props) => (
       shift={-7}
       className="relative"
       menuClassName={menuClassName}
-      itemProps={{ className: menuItemClassName }}
+      itemProps={{ className: subMenuClassName }}
     />
 )
+
+export const SubMenuItemComponent = (props) => (
+    <MenuItemInner {...props} className={subMenuItemClassName} />
+);
