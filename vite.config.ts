@@ -24,14 +24,19 @@ export default defineConfig({
     outDir,
     
     // minify only when not in DEV
-    minify: process.env.VITE__ISDEV !== 'true',
+    //minify: process.env.VITE___ISDEV === 'true' ? true: false,
+    minify: false,
+
     // remove sourcemaps when not in DEV
-    sourcemap: process.env.VITE__ISDEV === 'true' ? 'inline' : undefined,
+    sourcemap: process.env.VITE___ISDEV === 'true' ? 'inline' : undefined,
 
     rollupOptions: {
       input: {
-        popup: resolve(pagesDir, 'popup', 'popup.tsx'),
+        
         main: resolve(pagesDir, 'main', 'main.tsx'),
+        offscreen: resolve(pagesDir, 'offscreen', 'offscreen.tsx'),
+        popup: resolve(pagesDir, 'popup', 'popup.tsx'),
+
         contentScript: resolve(root, 'contentScript.ts'),
         backgroundScript: resolve(root, 'backgroundScript.ts'),
       },
@@ -45,5 +50,13 @@ export default defineConfig({
         },
       },
     },
+  },
+  // Resolves error when trying to load pglite-worker
+  worker:{
+    format: "es"
+  },
+  // Remove pglite from optimizations
+  optimizeDeps: {
+    exclude: ['@electric-sql/pglite', '@electric-sql/pglite/worker'],
   },
 });
