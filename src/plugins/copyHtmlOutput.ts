@@ -58,7 +58,9 @@ export default function copyHtmlOutput(): PluginOption {
 
       const file = bundle[fileName];
       if (file.type !== 'asset') continue;
+      if (!fileName.endsWith('.css')) continue;
 
+      console.log('asset: '+ fileName);
       const relTag = generateRelTag(file.fileName, 'css');
       head?.appendChild(relTag);
     }
@@ -79,9 +81,11 @@ export default function copyHtmlOutput(): PluginOption {
         const htmlFile = htmlFiles.find((html) => html.fileName.includes(file.name));
         if (!htmlFile) continue;
 
+        colorLog('[plugin] Injecting script files to ' + htmlFile.fileName, 'info');
         const injectedHtml = injectScriptsToHtml(htmlFile, file);
         colorLog('[plugin] Injected script files to ' + htmlFile.fileName, 'info');
 
+        colorLog('[plugin] Injecting css files to ' + htmlFile.fileName, 'info');
         const htmlWithAssets = injectAssets(htmlFile, injectedHtml, bundle) ?? injectedHtml;
         colorLog('[plugin] Injected css files to ' + htmlFile.fileName, 'info');
 

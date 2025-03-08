@@ -22,8 +22,12 @@ export default defineConfig({
   publicDir,
   build: {
     outDir,
-    //sourcemap: process.env.__DEV__ === 'true',
-    sourcemap: 'inline',
+    
+    // minify only when not in DEV
+    minify: process.env.VITE__ISDEV !== 'true',
+    // remove sourcemaps when not in DEV
+    sourcemap: process.env.VITE__ISDEV === 'true' ? 'inline' : undefined,
+
     rollupOptions: {
       input: {
         popup: resolve(pagesDir, 'popup', 'popup.tsx'),
@@ -33,6 +37,7 @@ export default defineConfig({
       },
       output: {
         entryFileNames: (chunk) => {
+          console.log('chunk file:' + chunk.name);
           if (chunk.name.includes('Script')) {
             return `${chunk.name}.js`;
           }
