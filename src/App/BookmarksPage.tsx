@@ -14,7 +14,7 @@ const BookmarksPage = (): JSX.Element => {
   return (
     <Flowbite theme={{mode: 'dark'}}>
       <Provider store={store}>
-        <div className="w-full mx-auto max-w-8xl" style={{ height: '100vh' }}>
+        <div className="w-full mx-auto max-w-8xl">
           <div className="h-full flex flex-col">
             <NavigationBar />
             <div id="main-content" className="h-full flex flex-row">

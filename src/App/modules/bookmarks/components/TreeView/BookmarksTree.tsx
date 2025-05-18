@@ -10,9 +10,10 @@ import useContextMenu from '../../hooks/useContextMenu';
 
 type propsType = {
   items?: BookmarkItem[];
+  desiredHeight?: number
 };
 
-const BookmarksTree = ({ items }: propsType) => {
+const BookmarksTree = ({ items, desiredHeight }: propsType) => {
   //const onCreate = ({ parentId, index, type }) => {};
   const onRename = ({ id, name }) => { };
   const onMove = ({ dragIds, parentId, index }) => { };
@@ -54,7 +55,7 @@ const BookmarksTree = ({ items }: propsType) => {
         ref={treeRef}
         indent={12}
         rowHeight={32}
-        height={1000}
+        height={desiredHeight}
         width={'100%'}
         className="treeview"
         data={items}
