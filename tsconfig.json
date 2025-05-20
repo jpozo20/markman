@@ -12,6 +12,6 @@
     "noImplicitAny": false,
     "target": "es2018"
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "drizzle.config.ts"],
   "exclude": ["./node_modules/*"]
 }

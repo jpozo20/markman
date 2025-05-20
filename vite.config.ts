@@ -34,7 +34,7 @@ export default defineConfig({
       input: {
         
         main: resolve(pagesDir, 'main', 'main.tsx'),
-        offscreen: resolve(pagesDir, 'offscreen', 'offscreen.tsx'),
+        offscreen: resolve(pagesDir, 'offscreen', 'offscreen.html'),
         popup: resolve(pagesDir, 'popup', 'popup.tsx'),
 
         contentScript: resolve(root, 'contentScript.ts'),
