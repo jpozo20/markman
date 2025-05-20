@@ -25,6 +25,8 @@ const BookmarksArea = () => {
       try {
         if (sidebarSelectedItem && sidebarSelectedItem.pathFromRoot != undefined) {
           dispatch(bookmarkActions.getFolderChildren(sidebarSelectedItem));
+          //chrome.runtime.sendMessage("bfocajfjmmbgbnmbcpmpkajfijflpnhe",{type: 'pglite', message:'message for pglite'})
+          //.then((response) => {console.log(response)});
         }
       } catch (error) {
         console.log(error);
