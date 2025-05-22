@@ -3,14 +3,14 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "react",
-    "lib": ["dom", "es2019"],
+    "lib": ["dom","DOM.Iterable", "ES2022"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "strict": true,
     "noImplicitAny": false,
-    "target": "es2018"
+    "target": "ES2024"
   },
   "include": ["./src/**/*", "drizzle.config.ts"],
   "exclude": ["./node_modules/*"]

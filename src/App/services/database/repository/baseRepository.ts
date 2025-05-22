@@ -24,7 +24,7 @@ class BaseRepository<TTable extends SchemaTables[keyof SchemaTables]> {
      * @param fromTable The table to select from
      * @returns All rows from the specified table
      */
-    public async getAllFromTable<T>(): Promise<TTable["$inferSelect"][]> {
+    public async getAllFromTable(): Promise<TTable["$inferSelect"][]> {
 
         const tableName = this.table._.name;
         const table = dbSchema[tableName];
