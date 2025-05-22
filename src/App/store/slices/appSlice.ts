@@ -1,4 +1,4 @@
-import { AnyAction, createAsyncThunk, createSlice, ThunkAction } from "@reduxjs/toolkit";
+import { AnyAction, createAsyncThunk, createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
 
 import { BookmarkActions, UserActionPayload } from "../../models/BookmarkActions";
 import { RootState } from "../store";
@@ -9,6 +9,7 @@ import * as UrlActionExecutor from "../../services/browser/UrlActionExecutor";
 
 const actionNames = {
     executeAction: 'app/executeAction',
+    setHasBookmarks: 'app/setHasBookmarks',
 
     saveBookmarks: 'app/saveBookmarksToStorage',
     loadBookmarksFromStorage: 'app/loadBookmarksFromStorage',
@@ -18,11 +19,13 @@ const actionNames = {
 export type AppSliceState = {
     isLoadingBookmarks: boolean;
     shouldUpdateStorage: boolean;
+    hasBookmarks: boolean;
 }
 
 const initialState: AppSliceState = {
     isLoadingBookmarks: true,
-    shouldUpdateStorage: false
+    shouldUpdateStorage: false,
+    hasBookmarks: false
 }
 
 
@@ -55,22 +58,28 @@ export const appStateSlice = createSlice({
     name: 'appState',
     initialState,
     reducers: {
-
+        setHasBookmarks: (state, action: PayloadAction<boolean>) => {
+            state.hasBookmarks = action.payload;
+        },
     },
     extraReducers(builder) {
-        builder.addCase(bookmarkActions.executeAction, (state, action) => {
+        builder.addCase(bookmarkActions.executeAction, (state) => {
             state.shouldUpdateStorage = true;
         }),
             builder.addCase(loadBookmarksFromStorage.fulfilled, (state, action) => {
                 state.isLoadingBookmarks = false
+                const bookmarksTree = action.payload;
+                
+                if (bookmarksTree == undefined) state.hasBookmarks = false;
+                else state.hasBookmarks = bookmarksTree.root.children == undefined
             }),
-            builder.addCase(loadBookmarksFromStorage.rejected, (state, action) => {
+            builder.addCase(loadBookmarksFromStorage.rejected, (state) => {
                 state.isLoadingBookmarks = false
             }),
-            builder.addCase(saveBookmarksToStorage.fulfilled, (state, action) => {
+            builder.addCase(saveBookmarksToStorage.fulfilled, (state) => {
                 state.shouldUpdateStorage = false;
             }),
-            builder.addCase(saveBookmarksToStorage.rejected, (state, action) => {
+            builder.addCase(saveBookmarksToStorage.rejected, (state) => {
                 state.shouldUpdateStorage = false;
             })
     }

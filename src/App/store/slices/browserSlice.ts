@@ -18,6 +18,7 @@ const initialState: BrowserApiState = {
 const actionNames = {
   getBookmarksTree: 'browser/getBookmarksTree',
   getChildren: 'browser/getChildren',
+  getBookmarksCount: 'browser/getBookmarksCount',
 
   deleteFolder: 'browser/deleteFolder',
   selectFolder: 'browser/selectFolder',
@@ -41,6 +42,15 @@ const getChildren = createAsyncThunk(
   async (folderId: string) => {
     const folder = await Browser.bookmarks.getSubTree(folderId);
     return adapter.convertChildren(folder[0]?.children);
+  },
+);
+
+const getBookmarksCount = createAsyncThunk(
+  actionNames.getBookmarksCount,
+  async () => {
+    const countSize = 10_000;
+    const recentlyAdded = await Browser.bookmarks.getRecent(countSize);
+    return recentlyAdded.length;
   },
 );
 
@@ -106,6 +116,12 @@ export const browserSlice = createSlice({
           folder.children = action.payload;
         }
       })
+      .addCase(getChildren.rejected, (state, action) => {
+        state.error = 'An error ocurred loading the bookmarks children';
+      })
+      .addCase(getBookmarksCount.fulfilled, (state, action) => {
+        
+      })
       .addCase(deleteFolder.fulfilled, (state, action) => {
         const parentId = action.meta.arg;
         const parentIndex = state.tree?.findIndex((bookmark) => bookmark.id == parentId);
@@ -120,5 +136,5 @@ export const browserSlice = createSlice({
 });
 
 export const brwoserActions = { ...browserSlice.actions };
-export const asyncBrowserThunks = { getBookmarksTree, getChildren, deleteFolder, getExistingWindows, getExistingIncognitoWindows };
+export const asyncBrowserThunks = { getBookmarksTree, getChildren, getBookmarksCount, deleteFolder, getExistingWindows, getExistingIncognitoWindows };
 export default browserSlice.reducer;

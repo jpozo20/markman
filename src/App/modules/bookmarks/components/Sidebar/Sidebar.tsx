@@ -1,17 +1,11 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import TreeStore from '../../../../services/TreeStore';
 import { NodeApi, Tree } from 'react-arborist';
 import TreeRowRenderer from '../TreeView/TreeRowRenderer';
 import FolderNodeRenderer from '../TreeView/FolderNodeRenderer';
 
-
-import { asyncAppThunks } from '../../../../store/slices/appSlice';
-import { useAppDispatch, useAppSelector } from '../../../../store/store';
-import {
-  asyncBrowserThunks,
-} from '../../../../store/slices/browserSlice';
-
+import { useAppDispatch } from '../../../../store/store';
 
 import { mapFolders } from '../../../../utils/arrayUtils';
 import { BookmarkItem } from '../../../../models/BookmarkTypes';
@@ -25,7 +19,7 @@ const style: React.CSSProperties = {
 };
 const Sidebar = () => {
   const dispatch = useAppDispatch();
-  const bookmarksLoading = useAppSelector((rootState) => rootState.appState.isLoadingBookmarks);
+
 
   const windowSize = useWindowSize();
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -40,24 +34,6 @@ const Sidebar = () => {
     if (selectedFolder) dispatch(bookmarkActions.selectSidebarItem(selectedFolder));
   };
 
-  useEffect(() => {
-
-    // Load bookmarks from localStorage. If bookmarks are not in localStorage, 
-    // load from Browser and save them to localStorage
-
-    async function loadBookmarks() {
-      if (!bookmarksLoading) return;
-
-      try {
-        let tree = await dispatch(asyncAppThunks.loadBookmarksFromStorage()).unwrap();
-        if (tree == undefined) tree = await dispatch(asyncBrowserThunks.getBookmarksTree()).unwrap();
-      } catch (error) {
-        console.log("Error loading bookmarks from useEffect");
-      }
-    }
-
-    loadBookmarks();
-  }, [useAppDispatch, bookmarksLoading]);
 
   useEffect(() => {
     if (!sidebarRef.current) return;
