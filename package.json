@@ -25,27 +25,28 @@
   "scripts": {
     "build": "vite build",
     "dev": "nodemon",
-    "test": "jest"
+    "test": "jest",
+    "db:generate": "drizzle-kit generate && pnpm tsx ./drizzle.migrator.ts"
   },
   "dependencies": {
-    "@electric-sql/pglite": "^0.3.1",
+    "@electric-sql/pglite": "^0.3.2",
     "@reduxjs/toolkit": "^2.8.2",
     "@rollup/plugin-replace": "^6.0.2",
-    "@szhsin/react-menu": "^4.4.0",
+    "@szhsin/react-menu": "^4.4.1",
     "@types/firefox-webext-browser": "^120.0.4",
-    "@types/node": "^22.15.18",
-    "@types/react": "^18.3.21",
-    "@types/react-dom": "^18.3.7",
+    "@types/node": "^22.15.21",
+    "@types/react": "^19.1.5",
+    "@types/react-dom": "^19.1.5",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.43.1",
     "flowbite": "^2.5.2",
     "flowbite-react": "^0.7.8",
     "immer": "^10.1.1",
     "prettier": "^2.8.8",
-    "react": "18.2.0",
+    "react": "^19.1.0",
     "react-arborist": "^3.4.3",
     "react-complex-tree": "^2.6.0",
-    "react-dom": "18.2.0",
+    "react-dom": "^19.1.0",
     "react-icons": "^4.12.0",
     "react-redux": "^8.1.3",
     "vite": "^6.3.5",
@@ -61,7 +62,7 @@
     "@types/webextension-polyfill": "^0.12.3",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
-    "@vitejs/plugin-react-swc": "^3.9.0",
+    "@vitejs/plugin-react-swc": "^3.10.0",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
     "create-html-element": "^5.0.0",
@@ -86,7 +87,8 @@
     "ts-jest": "^29.3.4",
     "tslib": "^2.8.1",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite-tsconfig-paths": "6.0.0-beta.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -10,8 +10,19 @@
     "noUnusedLocals": true,
     "strict": true,
     "noImplicitAny": false,
-    "target": "ES2024"
+    "target": "ES2024",
+    "baseUrl": "./src",
+    "paths": {
+      "@store/*": ["./App/store/*"],
+      "@services/*": ["./App/services/*"],
+      "@drizzle/*": ["../drizzle/*"],
+
+      "@modules/*": ["./App/modules/*"],
+      "@bookmarks/*":["./App/modules/bookmarks/*"],
+      "@database/*": ["./App/services/database/*"],
+      
+    }
   },
-  "include": ["./src/**/*", "drizzle.config.ts"],
+  "include": ["./src/**/*", "drizzle.config.ts", "drizzle.migrator.ts"],
   "exclude": ["./node_modules/*"]
 }

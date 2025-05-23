@@ -1,6 +1,8 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import tsconfigPaths from 'vite-tsconfig-paths'
+
 import copyManifest from './src/plugins/copyManifest';
 import copyHtmlOutput from './src/plugins/copyHtmlOutput';
 
@@ -10,6 +12,9 @@ const assetsDir = resolve(root, 'assets');
 const outDir = resolve(__dirname, 'dist');
 const publicDir = resolve(__dirname, 'public');
 
+const isDev = process.env.VITE___ISDEV === 'true';
+
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -18,11 +23,13 @@ export default defineConfig({
       '@pages': pagesDir,
     },
   },
-  plugins: [react(), copyManifest(), copyHtmlOutput()],
+  plugins: [
+    tsconfigPaths({ projectDiscovery: "lazy", loose: true }),
+    react(), copyManifest(), copyHtmlOutput()],
   publicDir,
   build: {
     outDir,
-    
+
     // minify only when not in DEV
     //minify: process.env.VITE___ISDEV === 'true' ? true: false,
     minify: false,
@@ -32,7 +39,6 @@ export default defineConfig({
 
     rollupOptions: {
       input: {
-        
         main: resolve(pagesDir, 'main', 'main.tsx'),
         offscreen: resolve(pagesDir, 'offscreen', 'offscreen.html'),
         popup: resolve(pagesDir, 'popup', 'popup.tsx'),
@@ -52,7 +58,7 @@ export default defineConfig({
     },
   },
   // Resolves error when trying to load pglite-worker
-  worker:{
+  worker: {
     format: "es"
   },
   // Remove pglite from optimizations
