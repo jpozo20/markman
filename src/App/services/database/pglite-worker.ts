@@ -10,7 +10,7 @@ log('loading pglite-worker')
 worker({
     async init(options) {
         const pg = new PGlite({
-            fs: new OpfsAhpFS('markman.db'),
+            fs: new OpfsAhpFS('markman/markman.db'),
             extensions: { vector },
             ...options
         });

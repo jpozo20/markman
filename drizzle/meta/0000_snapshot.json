@@ -1,5 +1,5 @@
 {
-  "id": "c82c5053-e4ef-4881-a224-5e56959a6ada",
+  "id": "cc0c1ef1-eb79-4b06-aff2-3afc4bb8c46f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -33,10 +33,10 @@
         },
         "type": {
           "name": "type",
-          "type": "type",
-          "typeSchema": "public",
+          "type": "bookmarkType",
+          "typeSchema": "markman",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "isPinned": {
           "name": "isPinned",
@@ -165,18 +165,16 @@
     }
   },
   "enums": {
-    "public.type": {
-      "name": "type",
-      "schema": "public",
+    "markman.bookmarkType": {
+      "name": "bookmarkType",
+      "schema": "markman",
       "values": [
         "folder",
         "bookmark"
       ]
     }
   },
-  "schemas": {
-    "markman": "markman"
-  },
+  "schemas": {},
   "sequences": {},
   "roles": {},
   "policies": {},

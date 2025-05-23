@@ -6,4 +6,7 @@ export default defineConfig({
   schema: './src/App/services/database/dbSchema.ts',
   dialect: 'postgresql',
   driver: 'pglite',
+  dbCredentials: {
+    url: 'opfs-ahp://markman/markman.db',
+  },
 });

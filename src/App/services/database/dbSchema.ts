@@ -3,7 +3,7 @@ import { boolean, integer, varchar, pgEnum, pgSchema, timestamp } from 'drizzle-
 
 
 const dbSchema = pgSchema('markman');
-export const bookmarkType = pgEnum('type', ['folder', 'bookmark']);
+export const bookmarkType = dbSchema.enum('bookmarkType', ['folder', 'bookmark']);
 
 export const Bookmarks = dbSchema.table('bookmarks', {
     id: integer('id').primaryKey().generatedByDefaultAsIdentity(),

@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import { PGliteWorker } from "@electric-sql/pglite/worker";
 
-import { initDb, MarkmanDb } from './markmanDb';
+import { initDb, runMigrations, MarkmanDb } from './markmanDb';
 
 type OnMessageCallback = browser.Runtime.OnMessageListenerCallback;
 
@@ -67,7 +67,9 @@ async function loadPGlite(): Promise<void> {
   );
 
   const pg = await PGliteWorker.create(worker);
+
   db = await initDb(pg);
+  await runMigrations(db);
 
   handleEvents(pg, worker);
 }
