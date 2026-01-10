@@ -17,6 +17,7 @@
       "@services/*": ["./App/services/*"],
       "@drizzle/*": ["../drizzle/*"],
 
+      "@models/*": ["./App/models/*"],
       "@modules/*": ["./App/modules/*"],
       "@bookmarks/*":["./App/modules/bookmarks/*"],
       "@database/*": ["./App/services/database/*"],

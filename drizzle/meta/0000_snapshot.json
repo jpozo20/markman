@@ -1,5 +1,5 @@
 {
-  "id": "cc0c1ef1-eb79-4b06-aff2-3afc4bb8c46f",
+  "id": "6503e7d9-d1df-4b46-8774-392c61a08867",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -25,8 +25,8 @@
             "cycle": false
           }
         },
-        "chromeId": {
-          "name": "chromeId",
+        "browserId": {
+          "name": "browserId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -53,13 +53,13 @@
         },
         "title": {
           "name": "title",
-          "type": "varchar(255)",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true
         },
         "url": {
           "name": "url",
-          "type": "varchar(255)",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true
         },
@@ -90,6 +90,12 @@
         "parentId": {
           "name": "parentId",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pathFromRoot": {
+          "name": "pathFromRoot",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },

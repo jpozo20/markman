@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { boolean, integer, varchar, pgEnum, pgSchema, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, integer, varchar, pgSchema, timestamp } from 'drizzle-orm/pg-core';
 
 
 const dbSchema = pgSchema('markman');
@@ -7,17 +7,18 @@ export const bookmarkType = dbSchema.enum('bookmarkType', ['folder', 'bookmark']
 
 export const Bookmarks = dbSchema.table('bookmarks', {
     id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
-    chromeId: integer('chromeId').notNull(),
+    browserId: integer('browserId').notNull().default(-1),
     type: bookmarkType().notNull(),
     isPinned: boolean('isPinned').default(false),
     pinOrder: integer('pinOrder'),
-    title: varchar('title', { length: 255 }).notNull(),
-    url: varchar('url', { length: 255 }).notNull(),
+    title: varchar('title', { length: 500 }).notNull(),
+    url: varchar('url', { length: 500 }),
     domain: varchar('domain', { length: 255 }),
     favIcon: varchar('favicon', { length: 255 }),
     createdAt: timestamp('createdAt').notNull(),
     updatedAt: timestamp('updatedAt'),
-    parentId: integer('parentId').notNull(),
+    parentId: integer('parentId'),
+    pathFromRoot: varchar('pathFromRoot', { length: 255 }),
     tags: integer('tags').array().notNull().default(sql`ARRAY[]::integer[]`)
 });
 export const Tags = dbSchema.table('tags', {
@@ -32,3 +33,7 @@ export const Tags = dbSchema.table('tags', {
 export type ExtractTables<T> = {
     [K in keyof T as T[K] extends { $inferSelect: infer U } ? K : never]: T[K];
 }
+
+export type DbBookmark = typeof Bookmarks.$inferSelect;
+export type NewBookmark = typeof Bookmarks.$inferInsert;
+export type UpdatedBookmark = Partial<typeof Bookmarks.$inferSelect>;

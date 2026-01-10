@@ -5,8 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1747997444853,
-      "tag": "0000_clear_killmonger",
+      "when": 1748066054473,
+      "tag": "0000_magical_exiles",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1767917187538,
+      "tag": "0001_aberrant_thunderbolt_ross",
       "breakpoints": true
     }
   ]

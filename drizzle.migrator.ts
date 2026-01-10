@@ -16,9 +16,9 @@ fs.writeFile(
     if (err) {
       console.error("❌ Error writing migrations.json:", err);
     } else {
-      console.log("🎉 Migrations written to migrations.json");
+      console.log("🎉 Migrations written to migrations.json!");
     }
   }
 );
 
-console.log("📦 Writing migrations to migrations.js!");
+console.log("📦 Writing migrations to migrations.json");
