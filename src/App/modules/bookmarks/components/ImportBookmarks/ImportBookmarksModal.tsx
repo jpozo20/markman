@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 
 import clsx from "clsx";
 import { Modal } from "flowbite-react";
+import browser from 'webextension-polyfill';
 
 import { useAppDispatch } from '../../../../store/store';
+import { appStateActions } from "@store/slices/appSlice";
 import { asyncBrowserThunks } from '../../../../store/slices/browserSlice';
 import { labelStyle, modalCancelButtonStyle, modalButtonLayout } from "../../../ui/styles";
+import { ExtensionRequest, WorkerResponse } from "@models/MessageRequests";
 
 const ImportBookmarksModal = ({ isOpen, onClose, onSave }) => {
 
@@ -13,7 +16,7 @@ const ImportBookmarksModal = ({ isOpen, onClose, onSave }) => {
 
     const [isImporting, setIsImporting] = useState(false);
     const [bookmarksCount, setBookmarksCount] = useState(0);
-    const [importedBookmarks, setImportedBookmarks] = useState(1300);
+    const [importedBookmarks, setImportedBookmarks] = useState(0);
 
 
     useEffect(() => {
@@ -29,6 +32,31 @@ const ImportBookmarksModal = ({ isOpen, onClose, onSave }) => {
         getTotalCount();
     }, [useAppDispatch, bookmarksCount]);
 
+    useEffect(() => {
+
+        // Listen for the response from the worker
+        async function handleProgress(request) {
+            if (request.type === WorkerResponse.PGLite.ImportBookmarks) {
+                setImportedBookmarks(request.data.imported);
+            }
+
+            if (request.type === WorkerResponse.PGLite.ImportFinished) {
+              console.log(
+                'Successfully imported ' + request.data.imported + ' bookmarks',
+              );
+              //dispatch(appStateActions.setHasBookmarks(true));
+              setIsImporting(false);
+            }
+        }
+
+        browser.runtime.onMessage.addListener(handleProgress);
+
+        // Disable the listener on unmount
+        return () => {
+            browser.runtime.onMessage.removeListener(handleProgress);
+        };
+    }, []);
+
     const onModalClose = () => {
         setIsImporting(false);
         if (onClose) {
@@ -39,6 +67,18 @@ const ImportBookmarksModal = ({ isOpen, onClose, onSave }) => {
     const handleImport = async () => {
         setIsImporting(true);
         try {
+
+            const tree = await dispatch(asyncBrowserThunks.getBookmarksTree()).unwrap();
+            var root = tree?.root?.children;
+
+            // Send the bookmarks to the worker
+            const message = {
+                type: ExtensionRequest.PGLite.ImportBookmarks,
+                payload: root,
+            };
+
+            // Send the message to the worker
+            browser.runtime.sendMessage(message);
 
         } catch (error) {
             console.log("Error importing bookmarks");

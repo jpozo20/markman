@@ -1,6 +1,8 @@
 import * as dbSchema from '../dbSchema';
 import { MarkmanDb, SchemaTables } from '../markmanDb';
 
+import { getTableName } from 'drizzle-orm';
+
 
 
 /**
@@ -11,12 +13,18 @@ import { MarkmanDb, SchemaTables } from '../markmanDb';
 class BaseRepository<TTable extends SchemaTables[keyof SchemaTables]> {
     protected pglite: MarkmanDb;
     protected table: TTable;
+    protected tableName: string;
 
 
 
     constructor(pglite: MarkmanDb, table: TTable) {
         this.table = table;
         this.pglite = pglite;
+
+        const lowerName = getTableName(table);
+        const tableName = Object.keys(dbSchema).find((key) => key.toLocaleLowerCase() === lowerName);
+        this.tableName = tableName || lowerName;
+
     }
 
     /**
@@ -26,8 +34,7 @@ class BaseRepository<TTable extends SchemaTables[keyof SchemaTables]> {
      */
     public async getAllFromTable(): Promise<TTable["$inferSelect"][]> {
 
-        const tableName = this.table._.name;
-        const table = dbSchema[tableName];
+        const table = dbSchema[this.tableName];
         const query = this.pglite.select().from(table).limit(100);
 
         const results = await query;
@@ -41,8 +48,7 @@ class BaseRepository<TTable extends SchemaTables[keyof SchemaTables]> {
      * @returns The row with the specified id
      */
     public async getById(id: number): Promise<TTable["$inferSelect"] | null> {
-        const tableName = this.table._.name;
-        const table = dbSchema[tableName];
+        const table = dbSchema[this.tableName];
 
         const query = this.pglite.select().from(table).where(table.id.eq(id));
         const result = await query;
@@ -55,12 +61,18 @@ class BaseRepository<TTable extends SchemaTables[keyof SchemaTables]> {
      * @returns The inserted row
      */
     public async insert(data: TTable["$inferInsert"]): Promise<TTable["$inferSelect"]> {
-        const tableName = this.table._.name;
-        const table = dbSchema[tableName];
 
-        const query = this.pglite.insert(table).values(data).returning();
-        const result = await query;
-        return result[0];
+        try {
+            const table = dbSchema[this.tableName];
+
+            const query = this.pglite.insert(table).values(data).returning();
+            const result = await query;
+            return result[0];
+
+        } catch (error) {
+            console.error("Error inserting data:", error);
+            return undefined as unknown as TTable["$inferSelect"];
+        }
     }
 
     /**
@@ -70,8 +82,7 @@ class BaseRepository<TTable extends SchemaTables[keyof SchemaTables]> {
      * @returns The updated row
      */
     public async update(id: number, data: Partial<TTable["$inferInsert"]>): Promise<TTable["$inferSelect"] | null> {
-        const tableName = this.table._.name;
-        const table = dbSchema[tableName];
+        const table = dbSchema[this.tableName];
 
         const query = this.pglite.update(table)
             .set(data).where(table.id.eq(id))
@@ -86,8 +97,7 @@ class BaseRepository<TTable extends SchemaTables[keyof SchemaTables]> {
      * @returns True if the row was deleted, false otherwise
      */
     public async delete(id: number): Promise<boolean> {
-        const tableName = this.table._.name;
-        const table = dbSchema[tableName];
+        const table = dbSchema[this.tableName];
 
         const query = this.pglite.delete(table)
             .where(table.id.eq(id))

@@ -11,7 +11,7 @@ import NoBookmarksMessage from './modules/bookmarks/components/ImportBookmarks/N
 import { store } from './store/store';
 
 
-const BookmarksPage = (): JSX.Element => {
+const BookmarksPage = (): React.ReactNode => {
   return (
     <Flowbite theme={{ mode: 'dark' }}>
       <Provider store={store}>

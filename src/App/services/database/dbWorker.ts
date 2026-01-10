@@ -1,7 +1,10 @@
 import browser from 'webextension-polyfill';
 import { PGliteWorker } from "@electric-sql/pglite/worker";
 
+import * as requests from '@models/MessageRequests'
 import { initDb, runMigrations, MarkmanDb } from './markmanDb';
+import BookmarkImporter from '@services/dataTransfer/BookmarkImporter';
+
 
 type OnMessageCallback = browser.Runtime.OnMessageListenerCallback;
 
@@ -42,9 +45,16 @@ function handleEvents(pg: PGliteWorker, worker: Worker): void {
   // Messages between the script and the extension
   const handleMessage: OnMessageCallback = (request: any, sender, sendResponse) => {
     switch (request.type) {
-      case 'pglite':
+      case requests.ExtensionRequest.PGLite.PGLiteRequest:
         log('receiving request from: ', sender);
         handleQuery(request, sendResponse);
+        break;
+      case requests.ExtensionRequest.PGLite.ImportBookmarks:
+        log('receiving import bookmmarks request from: ', sender);
+        const importer = new BookmarkImporter(db);
+        importer.importBookmarks(request.payload);
+        
+        //handleQuery(request, sendResponse);
         break;
       default:
         console.log('unknown message request');
@@ -60,14 +70,27 @@ function handleEvents(pg: PGliteWorker, worker: Worker): void {
   browser.runtime.onMessage.addListener(handleMessage);
 }
 
-async function loadPGlite(): Promise<void> {
+/**
+ * Initializes the PGliteWorker and creates a new PGlite instance.
+ * @param inMemory If true, the database will be stored in memory, otherwise it will be stored 
+ * on the Origin Private Filesystem (OPFS).
+ * @returns A promise that resolves to the PGliteWorker instance.
+ * @throws An error if the PGliteWorker fails to initialize.
+ */
+async function initializePGlite(inMemory: boolean = false): Promise<PGliteWorker> {
   worker = new Worker(
     new URL("./pglite-worker.ts", import.meta.url),
     { type: "module" },
   );
+  
+  // @ts-ignore
+  const pg = new PGliteWorker(worker, { inMemory: inMemory });
+  return pg;
+}
 
-  const pg = await PGliteWorker.create(worker);
-
+async function loadPGlite(): Promise<void> {
+  
+  const pg = await initializePGlite(true);
   db = await initDb(pg);
   await runMigrations(db);
 

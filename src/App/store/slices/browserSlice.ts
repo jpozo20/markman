@@ -4,6 +4,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { BookmarkItem, BookmarkType, BookmarkFolder } from '../../models/BookmarkTypes';
 import TreeStore from '../../services/TreeStore';
 import { BookmarksAdapter } from '../../services/adapter/BookmarksAdapter';
+import { countBookmarksRecursively } from 'App/utils/bookmarkUtils';
 
 export type BrowserApiState = {
   error: string | null;
@@ -48,9 +49,12 @@ const getChildren = createAsyncThunk(
 const getBookmarksCount = createAsyncThunk(
   actionNames.getBookmarksCount,
   async () => {
-    const countSize = 10_000;
-    const recentlyAdded = await Browser.bookmarks.getRecent(countSize);
-    return recentlyAdded.length;
+    
+    const tree = await Browser.bookmarks.getTree();
+    const root = tree[0]?.children;
+    const count = countBookmarksRecursively(root || []);
+    return count;
+
   },
 );
 

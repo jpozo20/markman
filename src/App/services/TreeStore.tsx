@@ -40,7 +40,7 @@ class TreeStore {
             const root = this._adapter.convertFolder(treeRoot);
             this._tree.root = root;
 
-            await saveBookmarksTree(this._tree);
+            //await saveBookmarksTree(this._tree);
         } catch (error) {
             console.log("Error creating bookmarks tree", error);
         }
